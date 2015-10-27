@@ -32,6 +32,9 @@ CREATE TABLE "etiqueta_notificacion" (
     "notificacionID" INTEGER NOT NULL
 );
 CREATE TABLE "categoria_contexto" (
-    "categoriaID" INTEGER NOT NULL,
-    "contextoID" INTEGER NOT NULL
+	"id" INTEGER PRIMARY KEY NOT NULL,
+	"categoriaID" INTEGER NOT NULL,
+    "contextoID" INTEGER NOT NULL,
+	FOREIGN KEY(categoriaID) REFERENCES Categoria(id),
+	FOREIGN KEY(contextoID) REFERENCES Contexto(id)
 );
