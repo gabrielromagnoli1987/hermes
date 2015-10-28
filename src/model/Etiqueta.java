@@ -10,6 +10,10 @@ public class Etiqueta {
 	private List<Notificacion> notificaciones;
 	
 	
+	public Etiqueta() {
+		
+	}
+	
 	public Etiqueta(String nombre, String descripcion) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;

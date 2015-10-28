@@ -1,5 +1,7 @@
 package model.dao;
 
+import java.util.List;
+
 import model.Etiqueta;
 
 public class EtiquetaDAO implements Storable<Etiqueta> {
@@ -12,6 +14,12 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 
 	@Override
 	public Etiqueta retrieve(Etiqueta etiqueta) {
+		
+		return null;
+	}
+	
+	@Override
+	public List<Etiqueta> retrieveAll(Etiqueta object) {
 		
 		return null;
 	}

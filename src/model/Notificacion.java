@@ -14,6 +14,10 @@ public class Notificacion {
 	private List<Etiqueta> etiquetas;
 	
 	
+	public Notificacion() {
+		
+	}
+	
 	public Notificacion(String text, Date fechaEnvio, Date fechaRecepcion, Paciente paciente, Contexto contexto) {
 		this.text = text;
 		this.fechaEnvio = fechaEnvio;

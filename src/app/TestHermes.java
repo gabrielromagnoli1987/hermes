@@ -31,11 +31,20 @@ public class TestHermes {
 		
 		// prueba de crear una categoria y guardarla en la base
 		
-		Categoria categoria = new Categoria("el nombre", "la descripcion", contextos);
+		Categoria categoria = new Categoria("el nombre 2", "", contextos);
+		Categoria db_categoria = null;
 		
 		Storable categoriaDAO = DAOFactory.getCategoriaDAO();
-		categoriaDAO.create(categoria);
+		//categoriaDAO.create(categoria);
+		//categoriaDAO.delete(categoria);
 		
+		categoria = (Categoria)categoriaDAO.retrieve(categoria);
+		
+		categoria.setNombre("nuevo nombre");
+		categoriaDAO.update(categoria);
+		
+		db_categoria = (Categoria)categoriaDAO.retrieve(categoria);
+		System.out.println(db_categoria);
 
 	}
 

@@ -7,6 +7,10 @@ public class Paciente {
 	private String apellido;
 	
 	
+	public Paciente() {
+		
+	}
+	
 	public Paciente(String nombre, String apellido) {
 		this.nombre = nombre;
 		this.apellido = apellido;

@@ -1,5 +1,7 @@
 package model.dao;
 
+import java.util.List;
+
 import model.Contexto;
 
 public class ContextoDAO implements Storable<Contexto> {
@@ -12,6 +14,12 @@ public class ContextoDAO implements Storable<Contexto> {
 
 	@Override
 	public Contexto retrieve(Contexto contexto) {
+		
+		return null;
+	}
+	
+	@Override
+	public List<Contexto> retrieveAll(Contexto object) {
 		
 		return null;
 	}

@@ -10,6 +10,10 @@ public class Contexto {
 	private List<Categoria> categorias;
 	
 	
+	public Contexto() {
+		
+	}
+	
 	public Contexto(String nombre, String descripcion) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;

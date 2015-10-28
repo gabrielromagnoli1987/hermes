@@ -1,5 +1,7 @@
 package model.dao;
 
+import java.util.List;
+
 import model.Paciente;
 
 public class PacienteDAO implements Storable<Paciente> {
@@ -12,6 +14,12 @@ public class PacienteDAO implements Storable<Paciente> {
 
 	@Override
 	public Paciente retrieve(Paciente paciente) {
+		
+		return null;
+	}
+	
+	@Override
+	public List<Paciente> retrieveAll(Paciente object) {
 		
 		return null;
 	}

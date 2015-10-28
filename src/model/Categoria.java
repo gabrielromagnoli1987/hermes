@@ -2,6 +2,8 @@ package model;
 
 import java.util.List;
 
+import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
+
 public class Categoria {
 	
 	private Integer id;
@@ -9,6 +11,10 @@ public class Categoria {
 	private String descripcion;
 	private List<Contexto> contextos;
 	
+	
+	public Categoria() {
+		
+	}
 	
 	public Categoria(String nombre, String descripcion) {
 		this.nombre = nombre;
@@ -51,6 +57,10 @@ public class Categoria {
 
 	public void setContextos(List<Contexto> contextos) {
 		this.contextos = contextos;
+	}
+	
+	public String toString() {
+		return "Nombre: " + nombre + " Descripcion: " + descripcion;
 	}
 
 }
