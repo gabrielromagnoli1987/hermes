@@ -50,5 +50,9 @@ public class Etiqueta {
 	public void setNotificaciones(List<Notificacion> notificaciones) {
 		this.notificaciones = notificaciones;
 	}
+	
+	public String toString() {
+		return "Nombre: " + nombre + " Descripcion: " + descripcion;
+	}
 
 }

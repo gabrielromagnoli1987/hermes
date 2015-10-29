@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import model.Categoria;
@@ -59,16 +60,21 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
 	    	if(resultSet.next()) {
-	    		categoria.setId(resultSet.getInt("id"));
+	    		//categoria.setId(resultSet.getInt("id"));
 	    		categoria.setNombre(resultSet.getString("nombre"));
-	    		categoria.setDescripcion(resultSet.getString("descripcion"));	    		
+	    		categoria.setDescripcion(resultSet.getString("descripcion"));
 	    	}
+	    	
+	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+	    	if(generatedKeys.next()) {
+	    		categoria.setId(generatedKeys.getInt(1));
+            }
 	    	
 	    	connection.close();	    	
 	    	

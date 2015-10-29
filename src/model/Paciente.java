@@ -39,5 +39,9 @@ public class Paciente {
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
+	
+	public String toString() {
+		return "Nombre: " + nombre + " Apellido: " + apellido;
+	}
 
 }

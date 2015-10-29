@@ -57,4 +57,8 @@ public class Contexto {
 		this.categorias = categorias;
 	}
 	
+	public String toString() {
+		return "Nombre: " + nombre + " Descripcion: " + descripcion;
+	}
+	
 }
