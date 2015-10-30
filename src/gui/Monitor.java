@@ -14,9 +14,16 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Properties;
+import javax.swing.SpringLayout;
+import java.awt.Font;
 
 public class Monitor extends JFrame {
 	
@@ -80,9 +87,26 @@ public class Monitor extends JFrame {
 		lblDesde.setBounds(100, 120, 70, 15);
 		panel_1.add(lblDesde);
 		
+		Properties properties = new Properties();
+		properties.put("text.today", "Today");
+		properties.put("text.month", "Month");
+		properties.put("text.year", "Year");
+		UtilDateModel model = new UtilDateModel();
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, null);
+		datePicker.setBounds(100, 150, 159, 30);
+		panel_1.add(datePicker);
+				
 		JLabel lblNewLhastaabel = new JLabel("hasta:");
-		lblNewLhastaabel.setBounds(239, 120, 70, 15);
+		lblNewLhastaabel.setBounds(271, 120, 46, 15);
 		panel_1.add(lblNewLhastaabel);
+		
+		UtilDateModel model_2 = new UtilDateModel();		
+		JDatePanelImpl datePanel_2 = new JDatePanelImpl(model_2, properties);
+		JDatePickerImpl datePicker_2 = new JDatePickerImpl(datePanel_2, null);		
+		datePicker_2.getJFormattedTextField().setFont(new Font("Dialog", Font.PLAIN, 12));
+		datePicker_2.setBounds(271, 150, 159, 30);
+		panel_1.add(datePicker_2);
 		
 		JLabel lblNewLabel_1 = new JLabel("Categoria:");
 		lblNewLabel_1.setBounds(239, 55, 78, 15);
