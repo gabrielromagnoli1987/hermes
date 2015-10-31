@@ -33,7 +33,7 @@ public class Monitor extends JFrame {
 	
 	
 	public Monitor() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Monitor.class.getResource("/gui/images/Hermes.jpg")));
+		//setIconImage(Toolkit.getDefaultToolkit().getImage(Monitor.class.getResource("/gui/images/Hermes.jpg")));
 		setTitle("Hermes");
 		setSize(new Dimension(1024, 768));
 		
