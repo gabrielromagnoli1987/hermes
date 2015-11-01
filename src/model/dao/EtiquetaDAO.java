@@ -19,7 +19,7 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	}
 	
 	@Override
-	public List<Etiqueta> retrieveAll(Etiqueta object) {
+	public List<Etiqueta> retrieveAll() {
 		
 		return null;
 	}

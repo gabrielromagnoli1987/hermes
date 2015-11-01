@@ -19,7 +19,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	}
 	
 	@Override
-	public List<Notificacion> retrieveAll(Notificacion object) {
+	public List<Notificacion> retrieveAll() {
 		
 		return null;
 	}

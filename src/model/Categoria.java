@@ -2,8 +2,6 @@ package model;
 
 import java.util.List;
 
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
-
 public class Categoria {
 	
 	private Integer id;
