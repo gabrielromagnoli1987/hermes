@@ -1,7 +1,6 @@
 package model.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,10 +17,9 @@ public class PacienteDAO implements Storable<Paciente> {
 		
 		boolean result = false;
 		
-	    try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO paciente (nombre, apellido) VALUES (?, ?)";
 	    	
@@ -32,12 +30,9 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
-	    	
-	    	connection.close();
+	    		    	
 	    	return result;
-	    	
-	    } catch(ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -49,9 +44,8 @@ public class PacienteDAO implements Storable<Paciente> {
 	public Paciente retrieve(Paciente paciente) {
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, apellido FROM paciente WHERE nombre = ? and apellido = ?";
 	    	
@@ -71,10 +65,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(generatedKeys.getInt(1));
             }
 	    	
-	    	connection.close();	    	
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -88,9 +79,8 @@ public class PacienteDAO implements Storable<Paciente> {
 		List<Paciente> pacientes = new ArrayList<Paciente>();
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM paciente";
 	    	
@@ -105,11 +95,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setApellido(resultSet.getString("apellido"));
 	    		pacientes.add(paciente);
 	    	}
-	    	
-	    	connection.close();	    	
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -123,9 +109,8 @@ public class PacienteDAO implements Storable<Paciente> {
 		boolean result = false;
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE paciente SET nombre = ? , apellido = ? WHERE id = ?";
 	    	
@@ -137,11 +122,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
-	    	
-	    	connection.close();
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }

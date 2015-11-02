@@ -1,48 +1,49 @@
 package app;
 
-import gui.Monitor;
-
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Categoria;
 import model.Contexto;
-import model.Notificacion;
-import model.Paciente;
 import model.dao.DAOFactory;
+import model.dao.SqliteHelper;
 import model.dao.Storable;
 
 public class TestHermes {
 
-	public static void main(String[] args) {
-		
-		
-		//Date fechaEnvio = new Date();
-		
-		
-		//Paciente paciente = new model.Paciente("paciente 1", "apellido 1");
-		
-//		Contexto contexto = new Contexto("Hogar", "La casa del paciente");
-//		Contexto contexto2 = new Contexto("Hogar 2", "La casa del paciente 2");
-//		
-//		List<Contexto> contextos = new ArrayList<Contexto>();
-//		contextos.add(contexto);
-//		contextos.add(contexto);
-		
-		//Notificacion notificacion = new Notificacion("la notificacion", fechaEnvio, fechaRecepcion, paciente, contexto);
+	public static void main(String[] args) {		
 		
 		
 		// prueba de crear una categoria y guardarla en la base
 		
-		//Categoria categoria = new Categoria("el nombre 2", "la descripcion", contextos);
-		Categoria categoria = new Categoria();
-		categoria.setNombre("categoria 5");
-//		Categoria db_categoria = null;
+		Contexto contexto = new Contexto("Hogar", "La casa del paciente");
+		Contexto contexto2 = new Contexto("Hogar 2", "La casa del paciente 2");
+		
+		List<Contexto> contextos = new ArrayList<Contexto>();
+		contextos.add(contexto);
+		contextos.add(contexto2);
+		
+		Categoria categoria = new Categoria("el nombre", "la descripcion", contextos);
+		Categoria categoria2 = new Categoria("CATEGORIA 2", "CATEGORIA descripcion 2");
 		
 		Storable categoriaDAO = DAOFactory.getCategoriaDAO();
+		categoriaDAO.create(categoria);
+		categoriaDAO.create(categoria2);
+		
+		Categoria categoria2_db = (Categoria)categoriaDAO.retrieve(categoria2);
+		categoria2_db.setContextos(contextos);
+		categoriaDAO.update(categoria2_db);
+		
+		//Paciente paciente = new model.Paciente("paciente 1", "apellido 1");
+		//Notificacion notificacion = new Notificacion("la notificacion", fechaEnvio, fechaRecepcion, paciente, contexto);
+		
+		//Categoria categoria = new Categoria();
+		//categoria.setNombre("categoria 5");
+//		Categoria db_categoria = null;
+		
+//		Storable categoriaDAO = DAOFactory.getCategoriaDAO();
 //		categoriaDAO.create(categoria);
-		categoriaDAO.delete(categoria);
+//		categoriaDAO.delete(categoria);
 		
 //		categoria = (Categoria)categoriaDAO.retrieve(categoria);
 //		
@@ -69,7 +70,7 @@ public class TestHermes {
 //		paciente_db = (Paciente)pacienteDAO.retrieve(paciente);
 //		System.out.println(paciente_db);
 		
-		
+		SqliteHelper.closeConnection();
 
 	}
 

@@ -1,8 +1,6 @@
 package model.dao;
 
-import java.sql.Array;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,10 +19,9 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		boolean result = false;
 		
-	    try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
 	    	
@@ -32,7 +29,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	preparedStatement.setString(2, categoria.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {
+	    	if (preparedStatement.executeUpdate() == 1) {	    		
 	    		result = true;
 	    		
 	    		List<Contexto> contextos = categoria.getContextos();
@@ -50,30 +47,14 @@ public class CategoriaDAO implements Storable<Categoria> {
 						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId());
 					}
 	    			
-//	    			String queryIdCategoria = "SELECT id FROM categoria WHERE nombre = ?";
-//	    			preparedStatement = connection.prepareStatement(queryIdCategoria);
-//	    			
-//	    			String queryManyToMany = "INSERT INTO categoria_contexto SELECT categoriaID, contextoID ";
-//	    			
-//	    			for (Contexto contexto : contextos) {
-//	    				queryManyToMany += queryManyToMany.format("UNION ALL SELECT %d, %d", categoria.getId(), contexto.getId());
-//	    			}
-//	    			
-//	    			preparedStatement = connection.prepareStatement(queryManyToMany);
-//	    			if (preparedStatement.executeUpdate() > 0) {
-//	    				result = true;
-//	    			}
 		    	}
 	    	}
 	    	
-	    	connection.close();
 	    	return result;
 	    	
-	    } catch(ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
-	    }
+		}
 	    
 	    return result;
 	    
@@ -85,9 +66,8 @@ public class CategoriaDAO implements Storable<Categoria> {
 		boolean result = false;
 		
 		try {
-			Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria_contexto (categoriaID, contextoID) VALUES (?, ?)";
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -98,12 +78,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		result = true;
 	    	}
 	    	
-	    	connection.close();
-	    	result = true;
-	    	
-		} catch(ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
-	    } catch(SQLException e) {	    	
+	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
 		
@@ -116,31 +91,33 @@ public class CategoriaDAO implements Storable<Categoria> {
 	public Categoria retrieve(Categoria categoria) {
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
 	    	
 	    	if (resultSet.next()) {	    		
 	    		categoria.setNombre(resultSet.getString("nombre"));
 	    		categoria.setDescripcion(resultSet.getString("descripcion"));
 	    	}
+	    		    	
+	    	query = "select last_insert_rowid()";
+	    	Statement statement = connection.createStatement();
+	    	resultSet = statement.executeQuery(query);
+	    	categoria.setId(resultSet.getInt(1));
 	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		categoria.setId(generatedKeys.getInt(1));
-            }
+//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+//	    	if(generatedKeys.next()) {
+//	    		categoria.setId(generatedKeys.getInt(1));
+//            }
 	    	
-	    	connection.close();	    	
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    	// al traerse la categoria deberia traerse los contextos	    	
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -155,9 +132,8 @@ public class CategoriaDAO implements Storable<Categoria> {
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM categoria";
 	    	
@@ -175,11 +151,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		
 	    		categorias.add(categoria);
 	    	}
-	    	
-	    	connection.close();	    	
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -194,9 +166,8 @@ public class CategoriaDAO implements Storable<Categoria> {
 		boolean result = false;
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE categoria SET nombre = ? , descripcion = ? WHERE id = ?";
 	    	
@@ -209,10 +180,8 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		result = true;
 	    	}
 	    	
-	    	connection.close();
+	    	// falta el manejo de update sobre los contextos asociados a la categoria actual
 	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -226,9 +195,8 @@ public class CategoriaDAO implements Storable<Categoria> {
 		boolean result = false;
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	// necesario para realizar el delete en cascada
 	    	String enableForeingKeys = "PRAGMA foreign_keys = ON";
@@ -242,11 +210,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	if (preparedStatement.executeUpdate() != 0) {	    		
 	    		result = true;
 	    	}
-	    	
-	    	connection.close();
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }

@@ -1,7 +1,6 @@
 package model.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,11 +17,10 @@ public class ContextoDAO implements Storable<Contexto> {
 	public boolean create(Contexto contexto) {
 		
 		boolean result = false;
-		
-	    try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO contexto (nombre, descripcion) VALUES (?, ?)";
 	    	
@@ -30,7 +28,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	preparedStatement.setString(2, contexto.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {
+	    	if (preparedStatement.executeUpdate() == 1) {	    		
 	    		result = true;
 	    		
 	    		List<Categoria> categorias = contexto.getCategorias();
@@ -44,30 +42,14 @@ public class ContextoDAO implements Storable<Contexto> {
 	    			for (Categoria categoria : categorias) {
 						result = result && categoriaDAO.create(categoria); // si ya esta creada, la excepcion se captura en el categoriaDAO
 						Categoria categoriaDB = categoriaDAO.retrieve(categoria);
-						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId()); // agregar la regla UNIQUE en la base a la combinacion de los ID
+						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId()); // agregar la regla UNIQUE en la base a la combinacion de los ID - listo
 					}
 	    			
-//	    			String queryIdCategoria = "SELECT id FROM categoria WHERE nombre = ?";
-//	    			preparedStatement = connection.prepareStatement(queryIdCategoria);
-//	    			
-//	    			String queryManyToMany = "INSERT INTO categoria_contexto SELECT categoriaID, contextoID ";
-//	    			
-//	    			for (Contexto contexto : contextos) {
-//	    				queryManyToMany += queryManyToMany.format("UNION ALL SELECT %d, %d", categoria.getId(), contexto.getId());
-//	    			}
-//	    			
-//	    			preparedStatement = connection.prepareStatement(queryManyToMany);
-//	    			if (preparedStatement.executeUpdate() > 0) {
-//	    				result = true;
-//	    			}
 		    	}
 	    	}
-	    	
-	    	connection.close();
+	    		    	
 	    	return result;
-	    	
-	    } catch(ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
 	    }
@@ -78,11 +60,10 @@ public class ContextoDAO implements Storable<Contexto> {
 	private boolean saveOnMapTable(Integer categoriaID, Integer contextoID) {
 		
 		boolean result = false;
-		
+			
 		try {
-			Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria_contexto (categoriaID, contextoID) VALUES (?, ?)";
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -91,13 +72,8 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
-	    	}
+	    	}	    	
 	    	
-	    	connection.close();
-	    	result = true;
-	    	
-		} catch(ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
 	    }
@@ -110,31 +86,32 @@ public class ContextoDAO implements Storable<Contexto> {
 	public Contexto retrieve(Contexto contexto) {
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
 	    	
 	    	if (resultSet.next()) {	    		
 	    		contexto.setNombre(resultSet.getString("nombre"));
 	    		contexto.setDescripcion(resultSet.getString("descripcion"));
 	    	}
 	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		contexto.setId(generatedKeys.getInt(1));
-            }
+	    	query = "select last_insert_rowid()";
+	    	Statement statement = connection.createStatement();
+	    	resultSet = statement.executeQuery(query);
+	    	contexto.setId(resultSet.getInt(1));
 	    	
-	    	connection.close();	    	
+//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+//	    	if(generatedKeys.next()) {
+//	    		contexto.setId(generatedKeys.getInt(1));
+//            }
 	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -148,9 +125,8 @@ public class ContextoDAO implements Storable<Contexto> {
 		List<Contexto> contextos = new ArrayList<Contexto>();
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM contexto";
 	    	
@@ -166,10 +142,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contextos.add(contexto);
 	    	}
 	    	
-	    	connection.close();	    	
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -183,9 +156,8 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE contexto SET nombre = ? , descripcion = ? WHERE id = ?";
 	    	
@@ -197,11 +169,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
-	    	
-	    	connection.close();
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -215,9 +183,8 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		try {
-	    	Class.forName("org.sqlite.JDBC");
-	    	
-	    	Connection connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
+			
+			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	// necesario para realizar el delete en cascada
 	    	String enableForeingKeys = "PRAGMA foreign_keys = ON";
@@ -231,11 +198,8 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (preparedStatement.executeUpdate() != 0) {	    		
 	    		result = true;
 	    	}
-	    	
-	    	connection.close();
-	    	
-	    } catch (ClassNotFoundException e) {
-	    	System.out.println("Driver not found");
+	    		    	
+	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Categoria {
@@ -7,7 +8,7 @@ public class Categoria {
 	private Integer id;
 	private String nombre;
 	private String descripcion;
-	private List<Contexto> contextos;
+	private List<Contexto> contextos = new ArrayList<Contexto>();
 	
 	
 	public Categoria() {
