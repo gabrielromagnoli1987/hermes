@@ -12,20 +12,20 @@ CREATE TABLE "etiqueta" (
 CREATE TABLE "contexto" (
     "id" INTEGER PRIMARY KEY NOT NULL,
     "nombre" TEXT UNIQUE NOT NULL,    
-    "descripcion" TEXT,
+    "descripcion" TEXT
     -- UNIQUE (nombre) ON CONFLICT IGNORE -- En el caso de usar esta constraint quitar el UNIQUE que acompaña a la declaracion de "nombre" (dos lineas mas arriba)
 );
 CREATE TABLE "categoria" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "nombre" TEXT UNIQUE NOT NULL,
-    "descripcion" TEXT,
+    "descripcion" TEXT
     -- UNIQUE (nombre) ON CONFLICT IGNORE
 );
 CREATE TABLE "notificacion" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "text" TEXT NOT NULL,
-    "fechaEnvio" TEXT,
-    "fechaRecepcion" TEXT,
+    "fechaEnvio" INTEGER,
+    "fechaRecepcion" INTEGER,
     "pacienteID" INTEGER NOT NULL,
     "contextoID" INTEGER NOT NULL
 );

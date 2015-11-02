@@ -40,14 +40,17 @@ public class ContextoDAO implements Storable<Contexto> {
 	    			CategoriaDAO categoriaDAO = new CategoriaDAO();
 	    			
 	    			for (Categoria categoria : categorias) {
-						result = result && categoriaDAO.create(categoria); // si ya esta creada, la excepcion se captura en el categoriaDAO
-						Categoria categoriaDB = categoriaDAO.retrieve(categoria);
-						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId()); // agregar la regla UNIQUE en la base a la combinacion de los ID - listo
+	    				Categoria categoriaDB = categoriaDAO.retrieve(categoria);
+	    				if (! categoriaDB.getNombre().equals(categoria.getNombre())) {
+	    					result = result && categoriaDAO.create(categoria);
+	    					categoriaDB = categoriaDAO.retrieve(categoria);
+	    				}
+						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId());
 					}
 	    			
 		    	}
 	    	}
-	    		    	
+	    	
 	    	return result;
 	    		    
 	    } catch(SQLException e) {	    	
@@ -85,38 +88,40 @@ public class ContextoDAO implements Storable<Contexto> {
 	@Override
 	public Contexto retrieve(Contexto contexto) {
 		
+		Contexto contexto_db = new Contexto("", "", new ArrayList<Categoria>());
+		
 		try {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
-	    		contexto.setNombre(resultSet.getString("nombre"));
-	    		contexto.setDescripcion(resultSet.getString("descripcion"));
+	    		contexto_db.setNombre(resultSet.getString("nombre"));
+	    		contexto_db.setDescripcion(resultSet.getString("descripcion"));
 	    	}
 	    	
-	    	query = "select last_insert_rowid()";
-	    	Statement statement = connection.createStatement();
-	    	resultSet = statement.executeQuery(query);
-	    	contexto.setId(resultSet.getInt(1));
+//	    	query = "select last_insert_rowid()";
+//	    	Statement statement = connection.createStatement();
+//	    	resultSet = statement.executeQuery(query);
+//	    	contexto.setId(resultSet.getInt(1));
 	    	
-//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-//	    	if(generatedKeys.next()) {
-//	    		contexto.setId(generatedKeys.getInt(1));
-//            }
+	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+	    	if(generatedKeys.next()) {
+	    		contexto_db.setId(generatedKeys.getInt(1));
+            }
 	    	
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
 		
-		return contexto;
+		return contexto_db;
 	}
 	
 	@Override

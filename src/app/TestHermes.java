@@ -1,5 +1,7 @@
 package app;
 
+import gui.Monitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import model.dao.Storable;
 
 public class TestHermes {
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {		
 		
 		
@@ -24,15 +27,16 @@ public class TestHermes {
 		contextos.add(contexto2);
 		
 		Categoria categoria = new Categoria("el nombre", "la descripcion", contextos);
-		Categoria categoria2 = new Categoria("CATEGORIA 2", "CATEGORIA descripcion 2");
+		Categoria categoria2 = new Categoria("CATEGORIA 2", "CATEGORIA descripcion 2", contextos);
 		
+		@SuppressWarnings("rawtypes")
 		Storable categoriaDAO = DAOFactory.getCategoriaDAO();
 		categoriaDAO.create(categoria);
 		categoriaDAO.create(categoria2);
 		
-		Categoria categoria2_db = (Categoria)categoriaDAO.retrieve(categoria2);
-		categoria2_db.setContextos(contextos);
-		categoriaDAO.update(categoria2_db);
+//		Categoria categoria2_db = (Categoria)categoriaDAO.retrieve(categoria2);
+//		categoria2_db.setContextos(contextos);
+//		categoriaDAO.update(categoria2_db);
 		
 		//Paciente paciente = new model.Paciente("paciente 1", "apellido 1");
 		//Notificacion notificacion = new Notificacion("la notificacion", fechaEnvio, fechaRecepcion, paciente, contexto);

@@ -42,8 +42,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    			ContextoDAO contextoDAO = new ContextoDAO();
 	    			
 	    			for (Contexto contexto : contextos) {
-						result = result && contextoDAO.create(contexto);
-						Contexto contextoDB = contextoDAO.retrieve(contexto);
+	    				Contexto contextoDB = contextoDAO.retrieve(contexto);
+	    				if (! contextoDB.getNombre().equals(contexto.getNombre())) {
+	    					result = result && contextoDAO.create(contexto);
+	    					contextoDB = contextoDAO.retrieve(contexto);
+	    				}
 						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId());
 					}
 	    			
@@ -90,31 +93,33 @@ public class CategoriaDAO implements Storable<Categoria> {
 	@Override
 	public Categoria retrieve(Categoria categoria) {
 		
+		Categoria categoria_db = new Categoria("", "", new ArrayList<Contexto>());
+		
 		try {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
 	    	
 	    	if (resultSet.next()) {	    		
-	    		categoria.setNombre(resultSet.getString("nombre"));
-	    		categoria.setDescripcion(resultSet.getString("descripcion"));
+	    		categoria_db.setNombre(resultSet.getString("nombre"));
+	    		categoria_db.setDescripcion(resultSet.getString("descripcion"));
 	    	}
-	    		    	
-	    	query = "select last_insert_rowid()";
-	    	Statement statement = connection.createStatement();
-	    	resultSet = statement.executeQuery(query);
-	    	categoria.setId(resultSet.getInt(1));
 	    	
-//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-//	    	if(generatedKeys.next()) {
-//	    		categoria.setId(generatedKeys.getInt(1));
-//            }
+//	    	query = "select last_insert_rowid()";
+//	    	Statement statement = connection.createStatement();
+//	    	resultSet = statement.executeQuery(query);
+//	    	categoria.setId(resultSet.getInt(1));
+	    	
+	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+	    	if(generatedKeys.next()) {
+	    		categoria_db.setId(generatedKeys.getInt(1));
+            }
 	    	
 	    	// al traerse la categoria deberia traerse los contextos	    	
 	    		    
@@ -122,7 +127,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	System.err.println(e.getMessage());
 	    }
 		
-		return categoria;
+		return categoria_db;
 		
 	}
 	
