@@ -29,25 +29,29 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	preparedStatement.setString(2, categoria.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {	    		
+	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
+	    		
+	    		query = "select last_insert_rowid()";
+		    	Statement statement = connection.createStatement();
+		    	ResultSet resultSet = statement.executeQuery(query);
+		    	categoria.setId(resultSet.getInt(1));
 	    		
 	    		List<Contexto> contextos = categoria.getContextos();
 	    		
 	    		if (! contextos.isEmpty()) {
 	    			
-	    			// categoriaDB a diferencia de cateogia, SI tiene el id generado por la base de datos
-	    			Categoria categoriaDB = this.retrieve(categoria);
-	    			
 	    			ContextoDAO contextoDAO = new ContextoDAO();
 	    			
 	    			for (Contexto contexto : contextos) {
+	    				
+	    				// Se chequea si un contexto con el mismo nombre ya existe en la BD
 	    				Contexto contextoDB = contextoDAO.retrieve(contexto);
 	    				if (! contextoDB.getNombre().equals(contexto.getNombre())) {
 	    					result = result && contextoDAO.create(contexto);
-	    					contextoDB = contextoDAO.retrieve(contexto);
 	    				}
-						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId());
+	    				// Se guardan los IDs en la tabla intermediaria
+						result = result && saveOnMapTable(categoria.getId(), contexto.getId());
 					}
 	    			
 		    	}
@@ -55,7 +59,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	
 	    	return result;
 	    	
-	    } catch(SQLException e) {	    	
+	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 		}
 	    
@@ -101,27 +105,17 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
 	    	
 	    	if (resultSet.next()) {	    		
 	    		categoria_db.setNombre(resultSet.getString("nombre"));
-	    		categoria_db.setDescripcion(resultSet.getString("descripcion"));
+	    		categoria_db.setDescripcion(resultSet.getString("descripcion"));		    	
 	    	}
 	    	
-//	    	query = "select last_insert_rowid()";
-//	    	Statement statement = connection.createStatement();
-//	    	resultSet = statement.executeQuery(query);
-//	    	categoria.setId(resultSet.getInt(1));
-	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		categoria_db.setId(generatedKeys.getInt(1));
-            }
-	    	
-	    	// al traerse la categoria deberia traerse los contextos	    	
+	    	// al traerse la categoria deberia traerse los contextos
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());

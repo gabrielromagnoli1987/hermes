@@ -43,7 +43,29 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	@Override
 	public Etiqueta retrieve(Etiqueta etiqueta) {
 		
-		return null;
+		Etiqueta etiqueta_db = new Etiqueta("", "");
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setString(1, etiqueta.getNombre());
+	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
+	    	
+	    	if (resultSet.next()) {	    		
+	    		etiqueta_db.setNombre(resultSet.getString("nombre"));
+	    		etiqueta_db.setDescripcion(resultSet.getString("descripcion"));		    	
+	    	}
+	    		    
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return etiqueta_db;
 	}
 	
 	@Override
@@ -82,7 +104,28 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	@Override
 	public boolean update(Etiqueta etiqueta) {
 		
-		return false;
+		boolean result = false;
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "UPDATE etiqueta SET nombre = ? , descripcion = ? WHERE id = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setString(1, etiqueta.getNombre());
+	    	preparedStatement.setString(2, etiqueta.getDescripcion());	    	
+	    	preparedStatement.setInt(3, etiqueta.getId());
+	    	
+	    	if (preparedStatement.executeUpdate() != 0) {
+	    		result = true;
+	    	}
+	    	
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return result;
 	}
 
 	@Override

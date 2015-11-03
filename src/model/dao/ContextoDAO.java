@@ -31,21 +31,26 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (preparedStatement.executeUpdate() == 1) {	    		
 	    		result = true;
 	    		
+	    		query = "select last_insert_rowid()";
+		    	Statement statement = connection.createStatement();
+		    	ResultSet resultSet = statement.executeQuery(query);
+		    	contexto.setId(resultSet.getInt(1));
+	    		
 	    		List<Categoria> categorias = contexto.getCategorias();
 	    		
 	    		if (! categorias.isEmpty()) {
 	    			
-	    			Contexto contextoDB = this.retrieve(contexto);
-	    			
 	    			CategoriaDAO categoriaDAO = new CategoriaDAO();
 	    			
 	    			for (Categoria categoria : categorias) {
+	    				
+	    				// Se chequea si una categoria con el mismo nombre ya existe en la BD
 	    				Categoria categoriaDB = categoriaDAO.retrieve(categoria);
 	    				if (! categoriaDB.getNombre().equals(categoria.getNombre())) {
-	    					result = result && categoriaDAO.create(categoria);
-	    					categoriaDB = categoriaDAO.retrieve(categoria);
+	    					result = result && categoriaDAO.create(categoria);	    					
 	    				}
-						result = result && saveOnMapTable(categoriaDB.getId(), contextoDB.getId());
+	    				// Se guardan los IDs en la tabla intermediaria
+						result = result && saveOnMapTable(categoria.getId(), contexto.getId());
 					}
 	    			
 		    	}
@@ -96,7 +101,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
@@ -106,17 +111,6 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contexto_db.setDescripcion(resultSet.getString("descripcion"));
 	    	}
 	    	
-//	    	query = "select last_insert_rowid()";
-//	    	Statement statement = connection.createStatement();
-//	    	resultSet = statement.executeQuery(query);
-//	    	contexto.setId(resultSet.getInt(1));
-	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		contexto_db.setId(generatedKeys.getInt(1));
-            }
-	    	
-	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }

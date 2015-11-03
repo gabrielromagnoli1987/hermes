@@ -6,8 +6,9 @@ CREATE TABLE "paciente" (
 CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE "etiqueta" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "nombre" TEXT UNIQUE NOT NULL ON CONFLICT IGNORE,
+    "nombre" TEXT UNIQUE NOT NULL,
     "descripcion" TEXT
+    -- UNIQUE (nombre) ON CONFLICT IGNORE
 );
 CREATE TABLE "contexto" (
     "id" INTEGER PRIMARY KEY NOT NULL,
