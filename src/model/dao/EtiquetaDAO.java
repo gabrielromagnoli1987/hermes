@@ -21,7 +21,7 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "INSERT INTO etiquetas (nombre, descripcion) VALUES (?, ?)";
+	    	String query = "INSERT INTO etiqueta (nombre, descripcion) VALUES (?, ?)";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, etiqueta.getNombre());
@@ -77,7 +77,7 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "SELECT * FROM paciente";
+	    	String query = "SELECT * FROM etiqueta";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	

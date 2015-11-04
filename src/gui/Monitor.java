@@ -1,29 +1,33 @@
 package gui;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
-import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+
+import model.Etiqueta;
+import model.dao.DAOFactory;
+import model.dao.Storable;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.util.Properties;
-import javax.swing.SpringLayout;
-import java.awt.Font;
 
 public class Monitor extends JFrame {
 	
@@ -172,8 +176,10 @@ public class Monitor extends JFrame {
 		JLabel lblAignarEtiqueta = new JLabel("Aignar Etiqueta:");
 		lblAignarEtiqueta.setBounds(12, 144, 117, 15);
 		panel_2.add(lblAignarEtiqueta);
-		
-		JComboBox comboBox_6 = new JComboBox();
+				
+		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
+		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());		
 		comboBox_6.setBounds(166, 140, 161, 22);
 		panel_2.add(comboBox_6);
 		

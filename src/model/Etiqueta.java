@@ -51,6 +51,7 @@ public class Etiqueta {
 		this.notificaciones = notificaciones;
 	}
 	
+	@Override
 	public String toString() {
 		return "Nombre: " + nombre + " Descripcion: " + descripcion;
 	}
