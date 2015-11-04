@@ -16,7 +16,32 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	@Override
 	public boolean create(Notificacion notificacion) {
 		
-		return false;
+		boolean result = false;
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "INSERT INTO notificacion (text, fechaEnvio, fechaRecepcion, pacienteID, contextoID) VALUES (?, ?, ?, ?, ?)";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setString(1, notificacion.getText());
+	    	preparedStatement.setLong(2, notificacion.getFechaEnvio().getTime());
+	    	preparedStatement.setLong(3, notificacion.getFechaRecepcion().getTime());
+	    	preparedStatement.setInt(4, notificacion.getPaciente().getId());
+	    	preparedStatement.setInt(5, notificacion.getContexto().getId());
+	    	
+	    	if (preparedStatement.executeUpdate() == 1) {
+	    		result = true;
+	    	}
+	    	
+	    	return result;
+	    	
+	    } catch(SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+	    
+	    return result;
 	}
 
 	@Override
@@ -46,11 +71,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		notificacion.setText(resultSet.getString("text"));
 	    		
 	    		Integer integerFechaEnvio = resultSet.getInt("fechaEnvio");
-	    		Date fechaEnvio = new Date(integerFechaEnvio);	    		
+	    		Date fechaEnvio = new Date(integerFechaEnvio);
 	    		notificacion.setFechaEnvio(fechaEnvio);
 	    		
 	    		Integer integerFechaRecepcion = resultSet.getInt("fechaRecepcion");
-	    		Date fechaRecepcion = new Date(integerFechaRecepcion);	    		
+	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
 	    		notificacion.setFechaEnvio(fechaRecepcion);
 	    		
 //	    		String getContextoQuery = "SELECT * FROM contexto WHERE ";
@@ -74,7 +99,32 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	@Override
 	public boolean update(Notificacion notificacion) {
 		
-		return false;
+		boolean result = false;
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "UPDATE notificacion SET text = ? , fechaEnvio = ? , fechaRecepcion = ? , pacienteID = ? , contextoID = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setString(1, notificacion.getText());
+	    	preparedStatement.setLong(2, notificacion.getFechaEnvio().getTime());
+	    	preparedStatement.setLong(3, notificacion.getFechaRecepcion().getTime());
+	    	preparedStatement.setInt(4, notificacion.getPaciente().getId());
+	    	preparedStatement.setInt(5, notificacion.getContexto().getId());
+	    	
+	    	if (preparedStatement.executeUpdate() == 1) {
+	    		result = true;
+	    	}
+	    	
+	    	return result;
+	    		    
+	    } catch(SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+	    
+	    return result;
 	}
 
 	@Override

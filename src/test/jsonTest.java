@@ -1,5 +1,7 @@
-package app;
+package test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,12 +46,20 @@ public class jsonTest {
 			FileWriter writer = new FileWriter("DB/notificacion.json");
 			writer.write(json);
 			writer.close();
+			System.out.println(json);
+			
+			notificacion = null;
+			
+			BufferedReader br = new BufferedReader(new FileReader("DB/notificacion.json"));
+
+			//convert the json string back to object
+			notificacion = gson.fromJson(br, Notificacion.class);
+
+			System.out.println(notificacion);
 	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
-		System.out.println(json);
 
     }
 
