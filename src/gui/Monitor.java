@@ -3,7 +3,6 @@ package gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -19,9 +18,13 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import model.Etiqueta;
+import model.Notificacion;
 import model.dao.DAOFactory;
 import model.dao.Storable;
 
@@ -179,7 +182,7 @@ public class Monitor extends JFrame {
 				
 		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
 		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
-		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());		
+		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());
 		comboBox_6.setBounds(166, 140, 161, 22);
 		panel_2.add(comboBox_6);
 		
@@ -223,14 +226,51 @@ public class Monitor extends JFrame {
 		scrollPane.setBounds(12, 28, 967, 326);
 		panel_3.add(scrollPane);
 		
+		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
+		List<Notificacion> notificaciones = notificacionDAO.retrieveAll();
+		
+		String[] headers = new String[] {
+			"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
+		};
+		
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
+		Object[][] data = new Object[notificaciones.size()][headers.length];
+		
+		for (int i = 0; i < notificaciones.size(); i++) {
+			Notificacion notificacion = notificaciones.get(i);
+			for (int j = 0; j < headers.length; j++) {				
+				data[i][j] = notificacion.getFechaEnvio();
+				data[i][j] = notificacion.getText();
+				data[i][j] = notificacion.getContexto().getNombre();
+				data[i][j] = notificacion.getContexto().getCategorias().get(0);
+				if (! notificacion.getContexto().getCategorias().isEmpty()) {
+					data[i][j] = notificacion.getContexto().getCategorias().get(0);
+				}
+				data[i][j] = notificacion.getPaciente().getNombre();
+				data[i][j] = notificacion.getEtiquetas().toString();
 			}
-		));
+		}
+		
+		table.setModel(new DefaultTableModel(data, headers));
+		
+//		table.setModel(new DefaultTableModel(
+//			new Object[][] {
+//			},
+//			new String[] {
+//				"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
+//			}
+//		));
+//		table.getModel().addTableModelListener(new TableModelListener() {
+//			
+//			@Override
+//			public void tableChanged(TableModelEvent e) {
+//				// TODO Auto-generated method stub
+//				//e.
+//				
+//			}
+//		});
+		//table.setModel(new TableHelper(null));
+		
 		scrollPane.setViewportView(table);
 		getContentPane().setLayout(groupLayout);
 	}

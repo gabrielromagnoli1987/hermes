@@ -59,7 +59,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "SELECT * FROM notificaciones";
+	    	String query = "SELECT * FROM notificacion";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	
