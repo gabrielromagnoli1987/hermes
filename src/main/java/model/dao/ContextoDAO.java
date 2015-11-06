@@ -101,7 +101,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
@@ -110,6 +110,11 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contexto_db.setNombre(resultSet.getString("nombre"));
 	    		contexto_db.setDescripcion(resultSet.getString("descripcion"));
 	    	}
+	    	
+	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+	    	if(generatedKeys.next()) {
+	    		contexto_db.setId(generatedKeys.getInt(1));
+            }
 	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
@@ -141,7 +146,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contextos.add(contexto);
 	    	}
 	    	
-	    		    
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }

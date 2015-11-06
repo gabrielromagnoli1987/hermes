@@ -105,15 +105,20 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
 	    	
-	    	if (resultSet.next()) {	    		
+	    	if (resultSet.next()) {
 	    		categoria_db.setNombre(resultSet.getString("nombre"));
 	    		categoria_db.setDescripcion(resultSet.getString("descripcion"));		    	
 	    	}
+	    	
+	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+	    	if(generatedKeys.next()) {
+	    		categoria_db.setId(generatedKeys.getInt(1));
+            }
 	    	
 	    	// al traerse la categoria deberia traerse los contextos
 	    		    

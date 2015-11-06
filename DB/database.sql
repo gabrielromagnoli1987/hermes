@@ -1,9 +1,10 @@
+CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE "paciente" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "nombre" TEXT NOT NULL,
-    "apellido" TEXT NOT NULL
+    "apellido" TEXT NOT NULL,
+    "dni" INTEGER UNIQUE NOT NULL
 );
-CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE "etiqueta" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "nombre" TEXT UNIQUE NOT NULL,
@@ -11,7 +12,7 @@ CREATE TABLE "etiqueta" (
     -- UNIQUE (nombre) ON CONFLICT IGNORE
 );
 CREATE TABLE "contexto" (
-    "id" INTEGER PRIMARY KEY NOT NULL,
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "nombre" TEXT UNIQUE NOT NULL,    
     "descripcion" TEXT
     -- UNIQUE (nombre) ON CONFLICT IGNORE -- En el caso de usar esta constraint quitar el UNIQUE que acompaña a la declaracion de "nombre" (dos lineas mas arriba)

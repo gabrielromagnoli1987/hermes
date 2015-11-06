@@ -38,14 +38,17 @@ public class CreateNotificacionTest {
 		categoriaDAO.create(categoria);
 		categoriaDAO.create(categoria2);
 		
-		Paciente paciente = new model.Paciente("paciente 1", "apellido 1");
+		Paciente paciente = new Paciente("paciente 1", "apellido 1", 12345678);
 		Storable pacienteDAO = DAOFactory.getPacienteDAO();
 		pacienteDAO.create(paciente);
 		Paciente paciente_db = (Paciente)pacienteDAO.retrieve(paciente);
 		
+		Storable contextoDAO = DAOFactory.getContextoDAO();
+		Contexto contexto_db = (Contexto)contextoDAO.retrieve(contexto);
+		
 		Date fechaRecepcion = new Date();
 		Date fechaEnvio = new Date();
-		Notificacion notificacion = new Notificacion("la notificacion", fechaEnvio, fechaRecepcion, paciente_db, contexto);
+		Notificacion notificacion = new Notificacion("la notificacion", fechaEnvio, fechaRecepcion, paciente_db, contexto_db);
 		
 		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
 		notificacionDAO.create(notificacion);

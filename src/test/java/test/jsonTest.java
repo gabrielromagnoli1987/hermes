@@ -21,7 +21,7 @@ public class jsonTest {
     public static void main(String[] args) {
 
     	
-    	Paciente paciente = new Paciente("nombre 1", "apellido 1");
+    	Paciente paciente = new Paciente("nombre 1", "apellido 1", 12345678);
     	Contexto contexto = new Contexto("el contexto", "la desc del contexto");
     	
     	Categoria categoria = new Categoria("cat 1", "desc cat 1");

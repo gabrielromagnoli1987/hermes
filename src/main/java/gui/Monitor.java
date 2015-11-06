@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-
 import model.Etiqueta;
 import model.Notificacion;
 import model.dao.DAOFactory;
@@ -29,6 +28,8 @@ import model.dao.Storable;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
+import controller.Controller;
 
 public class Monitor extends JFrame {
 	
@@ -41,6 +42,8 @@ public class Monitor extends JFrame {
 		//setIconImage(Toolkit.getDefaultToolkit().getImage(Monitor.class.getResource("/gui/images/Hermes.jpg")));
 		setTitle("Hermes");
 		setSize(new Dimension(1024, 768));
+		
+		Controller controller = new Controller();
 		
 		JPanel panel = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -223,43 +226,17 @@ public class Monitor extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 28, 967, 326);
 		panel_3.add(scrollPane);
-		
-		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
-		List<Notificacion> notificaciones = notificacionDAO.retrieveAll();
+
+		table = new JTable();
 		
 		String[] headers = new String[] {
-			"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
+				"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
 		};
 		
-		table = new JTable();
-		Object[][] data = new Object[notificaciones.size()][headers.length];
-		
-		for (int i = 0; i < notificaciones.size(); i++) {
-			Notificacion notificacion = notificaciones.get(i);
-			data[i][0] = notificacion.getFechaEnvio();
-			data[i][1] = notificacion.getText();
-			data[i][2] = notificacion.getContexto().getNombre();
-			
-			if (! notificacion.getContexto().getCategorias().isEmpty()) {
-				data[i][3] = notificacion.getContexto().getCategorias().toArray();
-			}
-
-			data[i][4] = notificacion.getPaciente().getNombre();
-			
-			if (! notificacion.getEtiquetas().isEmpty()) {
-				data[i][5] = notificacion.getEtiquetas().toString();
-			}
-		}
+		Object[][] data = controller.getTableData(headers);
 		
 		table.setModel(new DefaultTableModel(data, headers));
-		
-//		table.setModel(new DefaultTableModel(
-//			new Object[][] {
-//			},
-//			new String[] {
-//				"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
-//			}
-//		));
+
 //		table.getModel().addTableModelListener(new TableModelListener() {
 //			
 //			@Override

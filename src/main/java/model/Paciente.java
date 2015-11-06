@@ -5,15 +5,17 @@ public class Paciente {
 	private Integer id;
 	private String nombre;
 	private String apellido;
+	private Integer dni;
 	
 	
 	public Paciente() {
 		
 	}
 	
-	public Paciente(String nombre, String apellido) {
+	public Paciente(String nombre, String apellido, Integer dni) {
 		this.nombre = nombre;
 		this.apellido = apellido;
+		this.dni = dni;
 	}
 	
 	public Integer getId() {
@@ -40,6 +42,14 @@ public class Paciente {
 		this.apellido = apellido;
 	}
 	
+	public Integer getDni() {
+		return dni;
+	}
+
+	public void setDni(Integer dni) {
+		this.dni = dni;
+	}
+
 	@Override
 	public String toString() {
 		return nombre + " " + apellido;

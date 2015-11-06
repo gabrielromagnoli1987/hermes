@@ -21,11 +21,12 @@ public class PacienteDAO implements Storable<Paciente> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "INSERT INTO paciente (nombre, apellido) VALUES (?, ?)";
+	    	String query = "INSERT INTO paciente (nombre, apellido, dni) VALUES (?, ?, ?)";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, paciente.getNombre());
 	    	preparedStatement.setString(2, paciente.getApellido());
+	    	preparedStatement.setInt(3, paciente.getDni());
 	    	
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
@@ -47,17 +48,17 @@ public class PacienteDAO implements Storable<Paciente> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "SELECT nombre, apellido FROM paciente WHERE nombre = ? and apellido = ?";
+	    	String query = "SELECT nombre, apellido, dni FROM paciente WHERE dni = ?";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-	    	preparedStatement.setString(1, paciente.getNombre());
-	    	preparedStatement.setString(1, paciente.getApellido());
+	    	preparedStatement.setInt(1, paciente.getId());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
 	    		paciente.setNombre(resultSet.getString("nombre"));
 	    		paciente.setApellido(resultSet.getString("apellido"));
+	    		paciente.setDni(resultSet.getInt("dni"));
 	    	}
 	    	
 	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -65,7 +66,6 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(generatedKeys.getInt(1));
             }
 	    	
-	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
@@ -93,6 +93,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(resultSet.getInt("id"));
 	    		paciente.setNombre(resultSet.getString("nombre"));
 	    		paciente.setApellido(resultSet.getString("apellido"));
+	    		paciente.setDni(resultSet.getInt("dni"));
 	    		pacientes.add(paciente);
 	    	}
 	    		    
@@ -112,12 +113,13 @@ public class PacienteDAO implements Storable<Paciente> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "UPDATE paciente SET nombre = ? , apellido = ? WHERE id = ?";
+	    	String query = "UPDATE paciente SET nombre = ? , apellido = ? , dni = ? WHERE id = ?";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, paciente.getNombre());
-	    	preparedStatement.setString(2, paciente.getApellido());	    	
-	    	preparedStatement.setInt(3, paciente.getId());
+	    	preparedStatement.setString(2, paciente.getApellido());
+	    	preparedStatement.setInt(3, paciente.getDni());
+	    	preparedStatement.setInt(4, paciente.getId());
 	    	
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;

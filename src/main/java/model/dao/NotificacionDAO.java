@@ -89,7 +89,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		
 	    		Integer pacienteID = resultSet.getInt("pacienteID");
 	    		Paciente pacienteTemp = new Paciente();
-	    		pacienteTemp.setId(contextoID);
+	    		pacienteTemp.setId(pacienteID);
 	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
 	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieve(pacienteTemp);
 	    		notificacion.setPaciente(paciente_db);
