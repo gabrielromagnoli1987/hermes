@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import model.Contexto;
 import model.Etiqueta;
 import model.Notificacion;
+import model.Paciente;
 
 public class NotificacionDAO implements Storable<Notificacion> {
 
@@ -70,21 +72,31 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		notificacion.setId(resultSet.getInt("id"));
 	    		notificacion.setText(resultSet.getString("text"));
 	    		
-	    		Integer integerFechaEnvio = resultSet.getInt("fechaEnvio");
+	    		Long integerFechaEnvio = resultSet.getLong("fechaEnvio");
 	    		Date fechaEnvio = new Date(integerFechaEnvio);
 	    		notificacion.setFechaEnvio(fechaEnvio);
 	    		
-	    		Integer integerFechaRecepcion = resultSet.getInt("fechaRecepcion");
+	    		Long integerFechaRecepcion = resultSet.getLong("fechaRecepcion");
 	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
 	    		notificacion.setFechaEnvio(fechaRecepcion);
 	    		
-//	    		String getContextoQuery = "SELECT * FROM contexto WHERE ";
-//	    		preparedStatement.executeQuery(getContextoQuery);
-//	    		
-//	    		Contexto contexto = 
-//	    		notificacion.setContexto(contexto);
+	    		Integer contextoID = resultSet.getInt("contextoID");
+	    		Contexto contextoTemp = new Contexto();
+	    		contextoTemp.setId(contextoID);
+	    		Storable contextoDAO = DAOFactory.getContextoDAO();
+	    		Contexto contexto_db = (Contexto)contextoDAO.retrieve(contextoTemp);
+	    		notificacion.setContexto(contexto_db);
 	    		
-	    		// aca hay que traer todas las etiquetas de la notificacion actual
+	    		Integer pacienteID = resultSet.getInt("pacienteID");
+	    		Paciente pacienteTemp = new Paciente();
+	    		pacienteTemp.setId(contextoID);
+	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
+	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieve(pacienteTemp);
+	    		notificacion.setPaciente(paciente_db);
+	    			    		
+	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+	    		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
+	    		notificacion.setEtiquetas(etiquetas);
 	    		
 	    		notificaciones.add(notificacion);
 	    	}

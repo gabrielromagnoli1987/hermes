@@ -40,8 +40,9 @@ public class Paciente {
 		this.apellido = apellido;
 	}
 	
+	@Override
 	public String toString() {
-		return "Nombre: " + nombre + " Apellido: " + apellido;
+		return nombre + " " + apellido;
 	}
 
 }

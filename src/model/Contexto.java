@@ -58,8 +58,9 @@ public class Contexto {
 		this.categorias = categorias;
 	}
 	
+	@Override
 	public String toString() {
-		return "Nombre: " + nombre + " Descripcion: " + descripcion;
+		return nombre;
 	}
 	
 }

@@ -58,8 +58,9 @@ public class Categoria {
 		this.contextos = contextos;
 	}
 	
+	@Override
 	public String toString() {
-		return "Nombre: " + nombre + " Descripcion: " + descripcion;
+		return nombre;
 	}
 
 }

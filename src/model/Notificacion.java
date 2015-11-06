@@ -82,6 +82,7 @@ public class Notificacion {
 		this.etiquetas = etiquetas;
 	}
 	
+	@Override
 	public String toString() {
 		return "Nombre: " + text + " Fecha de envio: " + fechaEnvio + " Fecha de recepcion: " + fechaRecepcion + 
 				" Paciente: " + paciente.toString() + " Contexto: " + contexto.toString();

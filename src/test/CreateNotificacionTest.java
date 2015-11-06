@@ -16,6 +16,13 @@ public class CreateNotificacionTest {
 
 	public static void main(String[] args) {
 		
+		// si este test se corre dos veces seguidas rompe porque al haber una constraint unique sobre el nombre
+		// de las categorias y contextos, en este caso la categoria no se crea y por ende el contexto tampoco
+		// y llega en null en la creacion de la notificacion
+		// se puede agregar una validacion mas adelante
+		
+		// si fuera realmente un test habria que usar junit y hacer algunos assertions
+		
 		Contexto contexto = new Contexto("Hogar", "La casa del paciente");
 		Contexto contexto2 = new Contexto("Hogar 2", "La casa del paciente 2");
 		

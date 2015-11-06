@@ -18,10 +18,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+
 
 import model.Etiqueta;
 import model.Notificacion;
@@ -238,16 +236,18 @@ public class Monitor extends JFrame {
 		
 		for (int i = 0; i < notificaciones.size(); i++) {
 			Notificacion notificacion = notificaciones.get(i);
-			for (int j = 0; j < headers.length; j++) {				
-				data[i][j] = notificacion.getFechaEnvio();
-				data[i][j] = notificacion.getText();
-				data[i][j] = notificacion.getContexto().getNombre();
-				data[i][j] = notificacion.getContexto().getCategorias().get(0);
-				if (! notificacion.getContexto().getCategorias().isEmpty()) {
-					data[i][j] = notificacion.getContexto().getCategorias().get(0);
-				}
-				data[i][j] = notificacion.getPaciente().getNombre();
-				data[i][j] = notificacion.getEtiquetas().toString();
+			data[i][0] = notificacion.getFechaEnvio();
+			data[i][1] = notificacion.getText();
+			data[i][2] = notificacion.getContexto().getNombre();
+			
+			if (! notificacion.getContexto().getCategorias().isEmpty()) {
+				data[i][3] = notificacion.getContexto().getCategorias().toArray();
+			}
+
+			data[i][4] = notificacion.getPaciente().getNombre();
+			
+			if (! notificacion.getEtiquetas().isEmpty()) {
+				data[i][5] = notificacion.getEtiquetas().toString();
 			}
 		}
 		
