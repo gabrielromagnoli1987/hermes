@@ -28,7 +28,7 @@ public class Controller {
 			data[i][2] = notificacion.getContexto().getNombre();
 			
 			if (! notificacion.getContexto().getCategorias().isEmpty()) {
-				data[i][3] = notificacion.getContexto().getCategorias().toArray();
+				data[i][3] = notificacion.getContexto().getCategorias().toString();
 			}
 			
 			data[i][4] = notificacion.getPaciente().getNombre();

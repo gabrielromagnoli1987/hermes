@@ -8,6 +8,8 @@ public interface Storable<T> {
 	
 	public T retrieve(T object);
 	
+	public T retrieveById(T object);
+	
 	public List<T> retrieveAll();
 	
 	public boolean update(T object);

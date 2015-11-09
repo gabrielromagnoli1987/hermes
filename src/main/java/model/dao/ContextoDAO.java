@@ -28,7 +28,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	preparedStatement.setString(2, contexto.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {	    		
+	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    		
 	    		query = "select last_insert_rowid()";
@@ -116,12 +116,50 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contexto_db.setId(generatedKeys.getInt(1));
             }
 	    	
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	List<Categoria> categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto_db);
+	    	contexto_db.setCategorias(categorias);
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
 		
 		return contexto_db;
 	}
+	
+	@Override
+	public Contexto retrieveById(Contexto contexto) {
+		
+		Contexto contexto_db = new Contexto("", "", new ArrayList<Categoria>());
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "SELECT nombre, descripcion FROM contexto WHERE id = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setInt(1, contexto.getId());
+	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	
+	    	if (resultSet.next()) {	    		
+	    		contexto_db.setNombre(resultSet.getString("nombre"));
+	    		contexto_db.setDescripcion(resultSet.getString("descripcion"));
+	    		contexto_db.setId(contexto.getId());
+	    	}
+	    	
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	List<Categoria> categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto_db);
+	    	contexto_db.setCategorias(categorias);
+	    	
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return contexto_db;
+	}
+	
 	
 	@Override
 	public List<Contexto> retrieveAll() {
@@ -138,11 +176,17 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	
 	    	while (resultSet.next()) {
 	    		Contexto contexto = new Contexto();
 	    		contexto.setId(resultSet.getInt("id"));
 	    		contexto.setNombre(resultSet.getString("nombre"));
 	    		contexto.setDescripcion(resultSet.getString("descripcion"));
+	    			    		
+		    	List<Categoria> categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto);
+		    	contexto.setCategorias(categorias);
+	    		
 	    		contextos.add(contexto);
 	    	}
 	    	

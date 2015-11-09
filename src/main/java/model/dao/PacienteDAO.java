@@ -51,7 +51,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	String query = "SELECT nombre, apellido, dni FROM paciente WHERE dni = ?";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-	    	preparedStatement.setInt(1, paciente.getId());
+	    	preparedStatement.setInt(1, paciente.getDni());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
@@ -71,6 +71,35 @@ public class PacienteDAO implements Storable<Paciente> {
 	    }
 		
 		return paciente;
+	}
+	
+	@Override
+	public Paciente retrieveById(Paciente paciente) {
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "SELECT nombre, apellido, dni FROM paciente WHERE id = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setInt(1, paciente.getId());
+	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	
+	    	if (resultSet.next()) {	    		
+	    		paciente.setNombre(resultSet.getString("nombre"));
+	    		paciente.setApellido(resultSet.getString("apellido"));
+	    		paciente.setDni(resultSet.getInt("dni"));
+	    		paciente.setId(paciente.getId());
+	    	}
+	    	
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return paciente;
+		
 	}
 	
 	@Override

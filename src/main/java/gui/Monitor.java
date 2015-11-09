@@ -42,6 +42,7 @@ public class Monitor extends JFrame {
 		//setIconImage(Toolkit.getDefaultToolkit().getImage(Monitor.class.getResource("/gui/images/Hermes.jpg")));
 		setTitle("Hermes");
 		setSize(new Dimension(1024, 768));
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		Controller controller = new Controller();
 		

@@ -120,7 +120,9 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		categoria_db.setId(generatedKeys.getInt(1));
             }
 	    	
-	    	// al traerse la categoria deberia traerse los contextos
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
+	    	categoria_db.setContextos(contextos);
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
@@ -129,6 +131,41 @@ public class CategoriaDAO implements Storable<Categoria> {
 		return categoria_db;
 		
 	}
+	
+	@Override
+	public Categoria retrieveById(Categoria categoria) {
+		
+		Categoria categoria_db = new Categoria("", "", new ArrayList<Contexto>());
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+	    	String query = "SELECT nombre, descripcion FROM categoria WHERE id = ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setInt(1, categoria.getId());
+	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
+	    	
+	    	if (resultSet.next()) {
+	    		categoria_db.setNombre(resultSet.getString("nombre"));
+	    		categoria_db.setDescripcion(resultSet.getString("descripcion"));
+	    		categoria_db.setId(categoria.getId());
+	    	}
+	    	
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
+	    	categoria_db.setContextos(contextos);
+	    	
+	    		    
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return categoria_db;
+	}
+	
 	
 	@Override
 	public List<Categoria> retrieveAll() {
@@ -145,13 +182,16 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
+	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+	    	
 	    	while (resultSet.next()) {
 	    		Categoria categoria = new Categoria();
 	    		categoria.setId(resultSet.getInt("id"));
 	    		categoria.setNombre(resultSet.getString("nombre"));
 	    		categoria.setDescripcion(resultSet.getString("descripcion"));
 	    		
-	    		// aca hay que traer todos los contextos de la categoria actual
+	    		List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria);
+	    		categoria.setContextos(contextos);
 	    		
 	    		categorias.add(categoria);
 	    	}
@@ -221,5 +261,5 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		return result;
 	}
-
+	
 }

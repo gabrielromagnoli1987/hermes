@@ -53,6 +53,12 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	}
 	
 	@Override
+	public Notificacion retrieveById(Notificacion object) {
+		
+		return null;
+	}
+	
+	@Override
 	public List<Notificacion> retrieveAll() {
 		
 		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
@@ -84,14 +90,14 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		Contexto contextoTemp = new Contexto();
 	    		contextoTemp.setId(contextoID);
 	    		Storable contextoDAO = DAOFactory.getContextoDAO();
-	    		Contexto contexto_db = (Contexto)contextoDAO.retrieve(contextoTemp);
+	    		Contexto contexto_db = (Contexto)contextoDAO.retrieveById(contextoTemp);
 	    		notificacion.setContexto(contexto_db);
 	    		
 	    		Integer pacienteID = resultSet.getInt("pacienteID");
 	    		Paciente pacienteTemp = new Paciente();
 	    		pacienteTemp.setId(pacienteID);
 	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
-	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieve(pacienteTemp);
+	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieveById(pacienteTemp);
 	    		notificacion.setPaciente(paciente_db);
 	    			    		
 	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();

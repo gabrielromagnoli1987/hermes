@@ -32,6 +32,11 @@ public class CreateNotificacionTest {
 		
 		Categoria categoria = new Categoria("el nombre", "la descripcion", contextos);
 		Categoria categoria2 = new Categoria("CATEGORIA 2", "CATEGORIA descripcion 2", contextos);
+		Categoria categoria3 = new Categoria("CATEGORIA 3", "la descripcion 3");
+		
+		List<Categoria> categorias = new ArrayList<Categoria>();
+		categorias.add(categoria3);
+		contexto.setCategorias(categorias);
 		
 		@SuppressWarnings("rawtypes")
 		Storable categoriaDAO = DAOFactory.getCategoriaDAO();
