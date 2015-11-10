@@ -120,9 +120,9 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		categoria_db.setId(generatedKeys.getInt(1));
             }
 	    	
-	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
-	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
-	    	categoria_db.setContextos(contextos);
+//	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+//	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
+//	    	categoria_db.setContextos(contextos);
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
@@ -154,9 +154,9 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		categoria_db.setId(categoria.getId());
 	    	}
 	    	
-	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
-	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
-	    	categoria_db.setContextos(contextos);
+//	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+//	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
+//	    	categoria_db.setContextos(contextos);
 	    	
 	    		    
 	    } catch (SQLException e) {
