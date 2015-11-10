@@ -28,8 +28,10 @@ public class CategoriaContextoDAO {
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	Storable categoriaDAO = DAOFactory.getCategoriaDAO();	    	
 	    	
-	    	while (resultSet.next()) {	    		 
-	    		Categoria categoriaTemp = (Categoria)categoriaDAO.retrieveById(resultSet.getInt("categoriaID"));
+	    	while (resultSet.next()) {
+	    		Categoria categoriaTemp = new Categoria();
+	    		categoriaTemp.setId(resultSet.getInt("categoriaID"));
+	    		categoriaTemp = (Categoria)categoriaDAO.retrieveById(categoriaTemp);
 	    		categorias.add(categoriaTemp);
 	    	}
 	    	
@@ -56,8 +58,10 @@ public class CategoriaContextoDAO {
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	Storable contextoDAO = DAOFactory.getContextoDAO();
 	    	
-	    	while (resultSet.next()) {	    		 
-	    		Contexto contextoTemp = (Contexto)contextoDAO.retrieveById(resultSet.getInt("contextoID"));
+	    	while (resultSet.next()) {
+	    		Contexto contextoTemp = new Contexto();
+	    		contextoTemp.setId(resultSet.getInt("contextoID"));
+	    		contextoTemp = (Contexto)contextoDAO.retrieveById(contextoTemp);
 	    		contextos.add(contextoTemp);
 	    	}
 	    	
