@@ -5,6 +5,7 @@ import java.util.List;
 
 import model.Categoria;
 import model.Contexto;
+import model.Etiqueta;
 import model.Notificacion;
 import model.dao.CategoriaContextoDAO;
 import model.dao.DAOFactory;
@@ -51,9 +52,9 @@ public class Controller {
 		
 	}
 	
-	public Object[] getAllEtiquetas() {
+	public List<Etiqueta> getAllEtiquetas() {
 		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
-		return etiquetaDAO.retrieveAll().toArray();
+		return etiquetaDAO.retrieveAll();
 	}
 
 	public Object[] getContenidosDeNotificaciones() {
@@ -88,6 +89,26 @@ public class Controller {
 			categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto);			
 		}
 		return categorias;
+	}
+
+	public void crearEtiqueta(String text) {
+		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+		Etiqueta etiqueta = new Etiqueta();
+		etiqueta.setNombre(text);
+		etiquetaDAO.create(etiqueta);
+		
+	}
+
+	public void updateEtiqueta(Object etiquetaActual, String text) {
+		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+		((Etiqueta)etiquetaActual).setNombre(text);
+		etiquetaDAO.update((Etiqueta)etiquetaActual);
+	}
+
+	public void deleteEtiqueta(Object etiquetaActual) {
+		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();		
+		etiquetaDAO.delete((Etiqueta)etiquetaActual);
+		
 	}
 
 }

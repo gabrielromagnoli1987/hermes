@@ -5,7 +5,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -14,6 +17,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,6 +29,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import model.Categoria;
+import model.Etiqueta;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -38,6 +43,7 @@ public class Monitor extends JFrame {
 	private JTextField textField_1;
 	private JTable table;
 	private List<Categoria> categorias = new ArrayList<Categoria>();
+	private List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
 	
 	
 	public Monitor() {
@@ -49,7 +55,7 @@ public class Monitor extends JFrame {
 		Controller controller = new Controller();
 		
 		Object[] contenidoDeNotificaciones = controller.getContenidosDeNotificaciones();
-		Object[] etiquetas = controller.getAllEtiquetas();
+		etiquetas = controller.getAllEtiquetas();
 		Object[] contextos = controller.getContextos();
 		Object[] pacientes = controller.getPacientes();
 		
@@ -110,7 +116,7 @@ public class Monitor extends JFrame {
 		properties.put("text.year", "Year");
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, properties);
-		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, null);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 		datePicker.setBounds(100, 150, 159, 30);
 		panel_1.add(datePicker);
 				
@@ -120,7 +126,7 @@ public class Monitor extends JFrame {
 		
 		UtilDateModel model_2 = new UtilDateModel();		
 		JDatePanelImpl datePanel_2 = new JDatePanelImpl(model_2, properties);
-		JDatePickerImpl datePicker_2 = new JDatePickerImpl(datePanel_2, null);		
+		JDatePickerImpl datePicker_2 = new JDatePickerImpl(datePanel_2, new DateLabelFormatter());		
 		datePicker_2.getJFormattedTextField().setFont(new Font("Dialog", Font.PLAIN, 12));
 		datePicker_2.setBounds(271, 150, 159, 30);
 		panel_1.add(datePicker_2);
@@ -133,7 +139,7 @@ public class Monitor extends JFrame {
 		comboBox_3.setBounds(319, 50, 124, 24);
 		
 		comboBox_1.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {				
 				categorias = controller.getCategoriasDelContexto(comboBox_1.getSelectedItem());
@@ -148,7 +154,7 @@ public class Monitor extends JFrame {
 		lblEtiqueta.setBounds(12, 204, 70, 15);
 		panel_1.add(lblEtiqueta);
 		
-		JComboBox comboBox_4 = new JComboBox(etiquetas);
+		JComboBox comboBox_4 = new JComboBox(etiquetas.toArray());
 		comboBox_4.setBounds(100, 199, 127, 20);
 		panel_1.add(comboBox_4);
 		
@@ -181,10 +187,6 @@ public class Monitor extends JFrame {
 		panel_2.add(textField);
 		textField.setColumns(10);
 		
-		JButton btnCrear = new JButton("Crear");
-		btnCrear.setBounds(355, 21, 117, 25);
-		panel_2.add(btnCrear);
-		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.BLACK);
 		separator.setBounds(12, 60, 460, 8);
@@ -194,24 +196,23 @@ public class Monitor extends JFrame {
 		lblEliminarEtiqueta.setBounds(12, 80, 132, 15);
 		panel_2.add(lblEliminarEtiqueta);
 		
-		JComboBox comboBox_5 = new JComboBox(etiquetas);
+		JComboBox comboBox_5 = new JComboBox(etiquetas.toArray());
 		comboBox_5.setBounds(166, 80, 161, 22);
 		panel_2.add(comboBox_5);
 		
 		JButton btnEliminar = new JButton("Eliminar");
 		btnEliminar.setBounds(355, 80, 117, 25);
-		panel_2.add(btnEliminar);
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setForeground(Color.BLACK);
 		separator_1.setBounds(12, 124, 460, 8);
 		panel_2.add(separator_1);
 		
-		JLabel lblAignarEtiqueta = new JLabel("Aignar Etiqueta:");
+		JLabel lblAignarEtiqueta = new JLabel("Asignar Etiqueta:");
 		lblAignarEtiqueta.setBounds(12, 144, 117, 15);
 		panel_2.add(lblAignarEtiqueta);
 		
-		JComboBox comboBox_6 = new JComboBox(etiquetas);
+		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());
 		comboBox_6.setBounds(166, 140, 161, 22);
 		panel_2.add(comboBox_6);
 		
@@ -228,7 +229,7 @@ public class Monitor extends JFrame {
 		lblRenombrarEtiqueta.setBounds(12, 205, 147, 15);
 		panel_2.add(lblRenombrarEtiqueta);
 		
-		JComboBox comboBox_7 = new JComboBox(etiquetas);
+		JComboBox comboBox_7 = new JComboBox(etiquetas.toArray());
 		comboBox_7.setBounds(166, 205, 161, 22);
 		panel_2.add(comboBox_7);
 		
@@ -241,9 +242,79 @@ public class Monitor extends JFrame {
 		panel_2.add(textField_1);
 		textField_1.setColumns(10);
 		
+		
+		// RENOMBRAR ETIQUETA
+		
 		JButton btnRenombrar = new JButton("Renombrar");
 		btnRenombrar.setBounds(355, 234, 117, 25);
+		
+		btnRenombrar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(! textField_1.getText().isEmpty()) {
+					controller.updateEtiqueta(comboBox_7.getSelectedItem(), textField_1.getText());
+					etiquetas = controller.getAllEtiquetas();
+					Object[] etiquetasArray = etiquetas.toArray();
+					comboBox_4.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_5.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_6.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_7.setModel(new DefaultComboBoxModel(etiquetasArray));
+				}
+				
+			}
+		});
+		
 		panel_2.add(btnRenombrar);
+		
+		
+		// CREAR ETIQUETA
+		
+		JButton btnCrear = new JButton("Crear");
+		btnCrear.setBounds(355, 21, 117, 25);		
+		btnCrear.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(! textField.getText().isEmpty()) {
+					controller.crearEtiqueta(textField.getText());
+					etiquetas = controller.getAllEtiquetas();
+					Object[] etiquetasArray = etiquetas.toArray();
+					comboBox_4.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_5.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_6.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_7.setModel(new DefaultComboBoxModel(etiquetasArray));
+				}
+				
+			}
+		});
+		
+		panel_2.add(btnCrear);
+		
+		
+		// ELMINAR ETIQUETA
+		
+		btnEliminar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(! textField_1.getText().isEmpty()) {
+					controller.deleteEtiqueta(comboBox_5.getSelectedItem());
+					etiquetas = controller.getAllEtiquetas();
+					Object[] etiquetasArray = etiquetas.toArray();
+					comboBox_4.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_5.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_6.setModel(new DefaultComboBoxModel(etiquetasArray));
+					comboBox_7.setModel(new DefaultComboBoxModel(etiquetasArray));
+				}
+				
+			}
+		});
+		
+		panel_2.add(btnEliminar);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setLayout(null);
@@ -279,4 +350,27 @@ public class Monitor extends JFrame {
 		scrollPane.setViewportView(table);
 		getContentPane().setLayout(groupLayout);
 	}
+	
+	public class DateLabelFormatter extends AbstractFormatter {
+
+        private String datePattern = "yyyy-MM-dd";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+
+            return "";
+        }
+
+    }
+	
 }

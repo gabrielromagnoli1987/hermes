@@ -179,8 +179,8 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    	if (preparedStatement.executeUpdate() != 0) {	    		
 	    		result = true;
 	    	}
-	    		    	
-	    		    
+	    	
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    }
