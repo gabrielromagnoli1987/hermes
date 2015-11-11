@@ -1,12 +1,21 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import model.Categoria;
+import model.Contexto;
 import model.Notificacion;
+import model.dao.CategoriaContextoDAO;
 import model.dao.DAOFactory;
 import model.dao.Storable;
 
 public class Controller {
+	
+	/*
+	 * Se utiliza la clase controller como intermediario de la GUI y los DAOs
+	 * 
+	 * */
 	
 	public void asignarEtiqueta(String nombreEtiqueta, Notificacion notificacion) {
 		
@@ -40,6 +49,45 @@ public class Controller {
 		
 		return data;
 		
+	}
+	
+	public Object[] getAllEtiquetas() {
+		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+		return etiquetaDAO.retrieveAll().toArray();
+	}
+
+	public Object[] getContenidosDeNotificaciones() {
+		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
+		List<Notificacion> notificaciones = notificacionDAO.retrieveAll();
+		int size = notificaciones.size();
+		Object[] contenidos = new Object[size];
+		
+		for (int i = 0; i < size; i++) {
+			contenidos[i] = notificaciones.get(i).getText();
+		}
+		
+		return contenidos;
+		
+	}
+
+	public Object[] getContextos() {
+		Storable contextoDAO = DAOFactory.getContextoDAO();
+		return contextoDAO.retrieveAll().toArray();
+	}
+
+	public Object[] getPacientes() {
+		Storable pacienteDAO = DAOFactory.getPacienteDAO();
+		return pacienteDAO.retrieveAll().toArray();
+	}
+
+	public List<Categoria> getCategoriasDelContexto(Object selectedItem) {
+		List<Categoria> categorias = new ArrayList<Categoria>();
+		if (selectedItem != null) {
+			CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
+			Contexto contexto = (Contexto)selectedItem;		
+			categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto);			
+		}
+		return categorias;
 	}
 
 }

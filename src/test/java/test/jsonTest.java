@@ -29,7 +29,7 @@ public class jsonTest {
     	List<Categoria> categorias = new ArrayList<Categoria>();
     	categorias.add(categoria);
     	categorias.add(categoria2);
-		contexto.setCategorias(categorias );
+		contexto.setCategorias(categorias);
     	
     	Date fechaEnvio = new Date();
     	Date fechaRecepcion = new Date();

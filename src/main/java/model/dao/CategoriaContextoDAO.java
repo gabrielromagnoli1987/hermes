@@ -12,6 +12,8 @@ import model.Contexto;
 
 public class CategoriaContextoDAO {
 	
+	// CategoriaContextoDAO es utilizado de forma interna por lo que no se encuentra en la DAOFactory	
+	
 	public List<Categoria> retrieveAllCategoriesOfContext(Contexto contexto) {
 		
 		List<Categoria> categorias = new ArrayList<Categoria>();

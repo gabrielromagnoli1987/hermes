@@ -3,9 +3,13 @@ package gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -20,10 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import model.Etiqueta;
-import model.Notificacion;
-import model.dao.DAOFactory;
-import model.dao.Storable;
+import model.Categoria;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -36,6 +37,7 @@ public class Monitor extends JFrame {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTable table;
+	private List<Categoria> categorias = new ArrayList<Categoria>();
 	
 	
 	public Monitor() {
@@ -43,8 +45,14 @@ public class Monitor extends JFrame {
 		setTitle("Hermes");
 		setSize(new Dimension(1024, 768));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		Controller controller = new Controller();
+		
+		Object[] contenidoDeNotificaciones = controller.getContenidosDeNotificaciones();
+		Object[] etiquetas = controller.getAllEtiquetas();
+		Object[] contextos = controller.getContextos();
+		Object[] pacientes = controller.getPacientes();
+		
 		
 		JPanel panel = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -74,17 +82,17 @@ public class Monitor extends JFrame {
 		
 		JLabel lblNi = new JLabel("Paciente:");
 		lblNi.setBounds(12, 82, 70, 15);
-		panel_1.add(lblNi);
+		panel_1.add(lblNi);		
 		
-		JComboBox comboBox = new JComboBox();
+		JComboBox comboBox = new JComboBox(contenidoDeNotificaciones);
 		comboBox.setBounds(100, 23, 127, 20);
 		panel_1.add(comboBox);
 		
-		JComboBox comboBox_1 = new JComboBox();
+		JComboBox comboBox_1 = new JComboBox(contextos);
 		comboBox_1.setBounds(100, 50, 127, 20);
-		panel_1.add(comboBox_1);
 		
-		JComboBox comboBox_2 = new JComboBox();
+		
+		JComboBox comboBox_2 = new JComboBox(pacientes);
 		comboBox_2.setBounds(100, 77, 127, 20);
 		panel_1.add(comboBox_2);
 		
@@ -123,18 +131,39 @@ public class Monitor extends JFrame {
 		
 		JComboBox comboBox_3 = new JComboBox();
 		comboBox_3.setBounds(319, 50, 124, 24);
+		
+		comboBox_1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				categorias = controller.getCategoriasDelContexto(comboBox_1.getSelectedItem());
+				comboBox_3.setModel(new DefaultComboBoxModel(categorias.toArray()));
+			}
+		});
+		panel_1.add(comboBox_1);
+		
 		panel_1.add(comboBox_3);
 		
 		JLabel lblEtiqueta = new JLabel("Etiqueta:");
 		lblEtiqueta.setBounds(12, 204, 70, 15);
 		panel_1.add(lblEtiqueta);
 		
-		JComboBox comboBox_4 = new JComboBox();
+		JComboBox comboBox_4 = new JComboBox(etiquetas);
 		comboBox_4.setBounds(100, 199, 127, 20);
 		panel_1.add(comboBox_4);
 		
 		JButton btnFiltrar = new JButton("Filtrar");
 		btnFiltrar.setBounds(12, 244, 431, 25);
+		
+		btnFiltrar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
 		panel_1.add(btnFiltrar);
 		
 		JPanel panel_2 = new JPanel();
@@ -160,12 +189,12 @@ public class Monitor extends JFrame {
 		separator.setForeground(Color.BLACK);
 		separator.setBounds(12, 60, 460, 8);
 		panel_2.add(separator);
-		
+
 		JLabel lblEliminarEtiqueta = new JLabel("Eliminar Etiqueta:");
 		lblEliminarEtiqueta.setBounds(12, 80, 132, 15);
 		panel_2.add(lblEliminarEtiqueta);
 		
-		JComboBox comboBox_5 = new JComboBox();
+		JComboBox comboBox_5 = new JComboBox(etiquetas);
 		comboBox_5.setBounds(166, 80, 161, 22);
 		panel_2.add(comboBox_5);
 		
@@ -181,10 +210,8 @@ public class Monitor extends JFrame {
 		JLabel lblAignarEtiqueta = new JLabel("Aignar Etiqueta:");
 		lblAignarEtiqueta.setBounds(12, 144, 117, 15);
 		panel_2.add(lblAignarEtiqueta);
-				
-		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
-		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
-		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());
+		
+		JComboBox comboBox_6 = new JComboBox(etiquetas);
 		comboBox_6.setBounds(166, 140, 161, 22);
 		panel_2.add(comboBox_6);
 		
@@ -201,7 +228,7 @@ public class Monitor extends JFrame {
 		lblRenombrarEtiqueta.setBounds(12, 205, 147, 15);
 		panel_2.add(lblRenombrarEtiqueta);
 		
-		JComboBox comboBox_7 = new JComboBox();
+		JComboBox comboBox_7 = new JComboBox(etiquetas);
 		comboBox_7.setBounds(166, 205, 161, 22);
 		panel_2.add(comboBox_7);
 		

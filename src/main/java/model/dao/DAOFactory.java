@@ -34,6 +34,5 @@ public class DAOFactory {
 		return new PacienteDAO();
 		
 	}
-	
 
 }
