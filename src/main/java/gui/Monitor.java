@@ -39,6 +39,11 @@ import controller.Controller;
 
 public class Monitor extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7580692210516362526L;
+	
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTable table;
@@ -90,15 +95,15 @@ public class Monitor extends JFrame {
 		lblNi.setBounds(12, 82, 70, 15);
 		panel_1.add(lblNi);		
 		
-		JComboBox comboBox = new JComboBox(contenidoDeNotificaciones);
+		JComboBox<Object> comboBox = new JComboBox<Object>(contenidoDeNotificaciones);
 		comboBox.setBounds(100, 23, 127, 20);
 		panel_1.add(comboBox);
 		
-		JComboBox comboBox_1 = new JComboBox(contextos);
+		JComboBox<Object> comboBox_1 = new JComboBox<Object>(contextos);
 		comboBox_1.setBounds(100, 50, 127, 20);
 		
 		
-		JComboBox comboBox_2 = new JComboBox(pacientes);
+		JComboBox<?> comboBox_2 = new JComboBox<Object>(pacientes);
 		comboBox_2.setBounds(100, 77, 127, 20);
 		panel_1.add(comboBox_2);
 		
@@ -135,7 +140,7 @@ public class Monitor extends JFrame {
 		lblNewLabel_1.setBounds(239, 55, 78, 15);
 		panel_1.add(lblNewLabel_1);
 		
-		JComboBox comboBox_3 = new JComboBox();
+		JComboBox<?> comboBox_3 = new JComboBox<Object>();
 		comboBox_3.setBounds(319, 50, 124, 24);
 		
 		comboBox_1.addActionListener(new ActionListener() {
@@ -154,7 +159,7 @@ public class Monitor extends JFrame {
 		lblEtiqueta.setBounds(12, 204, 70, 15);
 		panel_1.add(lblEtiqueta);
 		
-		JComboBox comboBox_4 = new JComboBox(etiquetas.toArray());
+		JComboBox<?> comboBox_4 = new JComboBox<Object>(etiquetas.toArray());
 		comboBox_4.setBounds(100, 199, 127, 20);
 		panel_1.add(comboBox_4);
 		
@@ -196,7 +201,7 @@ public class Monitor extends JFrame {
 		lblEliminarEtiqueta.setBounds(12, 80, 132, 15);
 		panel_2.add(lblEliminarEtiqueta);
 		
-		JComboBox comboBox_5 = new JComboBox(etiquetas.toArray());
+		JComboBox<?> comboBox_5 = new JComboBox<Object>(etiquetas.toArray());
 		comboBox_5.setBounds(166, 80, 161, 22);
 		panel_2.add(comboBox_5);
 		
@@ -212,7 +217,7 @@ public class Monitor extends JFrame {
 		lblAignarEtiqueta.setBounds(12, 144, 117, 15);
 		panel_2.add(lblAignarEtiqueta);
 		
-		JComboBox comboBox_6 = new JComboBox(etiquetas.toArray());
+		JComboBox<?> comboBox_6 = new JComboBox<Object>(etiquetas.toArray());
 		comboBox_6.setBounds(166, 140, 161, 22);
 		panel_2.add(comboBox_6);
 		
@@ -229,7 +234,7 @@ public class Monitor extends JFrame {
 		lblRenombrarEtiqueta.setBounds(12, 205, 147, 15);
 		panel_2.add(lblRenombrarEtiqueta);
 		
-		JComboBox comboBox_7 = new JComboBox(etiquetas.toArray());
+		JComboBox<?> comboBox_7 = new JComboBox<Object>(etiquetas.toArray());
 		comboBox_7.setBounds(166, 205, 161, 22);
 		panel_2.add(comboBox_7);
 		
@@ -301,16 +306,14 @@ public class Monitor extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if(! textField_1.getText().isEmpty()) {
-					controller.deleteEtiqueta(comboBox_5.getSelectedItem());
-					etiquetas = controller.getAllEtiquetas();
-					Object[] etiquetasArray = etiquetas.toArray();
-					comboBox_4.setModel(new DefaultComboBoxModel(etiquetasArray));
-					comboBox_5.setModel(new DefaultComboBoxModel(etiquetasArray));
-					comboBox_6.setModel(new DefaultComboBoxModel(etiquetasArray));
-					comboBox_7.setModel(new DefaultComboBoxModel(etiquetasArray));
-				}
-				
+				controller.deleteEtiqueta(comboBox_5.getSelectedItem());
+				etiquetas = controller.getAllEtiquetas();
+				Object[] etiquetasArray = etiquetas.toArray();
+				comboBox_4.setModel(new DefaultComboBoxModel(etiquetasArray));
+				comboBox_5.setModel(new DefaultComboBoxModel(etiquetasArray));
+				comboBox_6.setModel(new DefaultComboBoxModel(etiquetasArray));
+				comboBox_7.setModel(new DefaultComboBoxModel(etiquetasArray));
+
 			}
 		});
 		
@@ -351,9 +354,15 @@ public class Monitor extends JFrame {
 		getContentPane().setLayout(groupLayout);
 	}
 	
+	
 	public class DateLabelFormatter extends AbstractFormatter {
 
-        private String datePattern = "yyyy-MM-dd";
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -8155907680201120364L;
+		
+		private String datePattern = "yyyy-MM-dd";
         private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
         @Override

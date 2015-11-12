@@ -176,7 +176,7 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, etiqueta.getNombre());
 	    	
-	    	if (preparedStatement.executeUpdate() != 0) {	    		
+	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
 	    	
