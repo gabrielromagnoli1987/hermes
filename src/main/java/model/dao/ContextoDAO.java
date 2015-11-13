@@ -28,7 +28,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	preparedStatement.setString(2, contexto.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {
+	    	if (preparedStatement.executeUpdate() >= 1) {
 	    		result = true;
 	    		
 	    		query = "select last_insert_rowid()";

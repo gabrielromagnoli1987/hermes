@@ -29,7 +29,7 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	preparedStatement.setString(1, categoria.getNombre());
 	    	preparedStatement.setString(2, categoria.getDescripcion());
 	    	
-	    	if (preparedStatement.executeUpdate() == 1) {
+	    	if (preparedStatement.executeUpdate() >= 1) {
 	    		result = true;
 	    		
 	    		query = "select last_insert_rowid()";
