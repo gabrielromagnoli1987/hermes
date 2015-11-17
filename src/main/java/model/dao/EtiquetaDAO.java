@@ -50,9 +50,9 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
+	    	String query = "SELECT id, nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, etiqueta.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
@@ -60,12 +60,13 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    	if (resultSet.next()) {	    		
 	    		etiqueta_db.setNombre(resultSet.getString("nombre"));
 	    		etiqueta_db.setDescripcion(resultSet.getString("descripcion"));		    	
+	    		etiqueta_db.setId(resultSet.getInt("id"));
 	    	}
 	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		etiqueta_db.setId(generatedKeys.getInt(1));
-            }
+//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+//	    	if(generatedKeys.next()) {
+//	    		etiqueta_db.setId(generatedKeys.getInt(1));
+//            }
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());

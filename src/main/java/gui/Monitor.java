@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -131,8 +130,7 @@ public class Monitor extends JFrame {
 		
 		UtilDateModel model_2 = new UtilDateModel();		
 		JDatePanelImpl datePanel_2 = new JDatePanelImpl(model_2, properties);
-		JDatePickerImpl datePicker_2 = new JDatePickerImpl(datePanel_2, new DateLabelFormatter());		
-		datePicker_2.getJFormattedTextField().setFont(new Font("Dialog", Font.PLAIN, 12));
+		JDatePickerImpl datePicker_2 = new JDatePickerImpl(datePanel_2, new DateLabelFormatter());
 		datePicker_2.setBounds(271, 150, 159, 30);
 		panel_1.add(datePicker_2);
 		
@@ -162,20 +160,6 @@ public class Monitor extends JFrame {
 		JComboBox<?> comboBox_4 = new JComboBox<Object>(etiquetas.toArray());
 		comboBox_4.setBounds(100, 199, 127, 20);
 		panel_1.add(comboBox_4);
-		
-		JButton btnFiltrar = new JButton("Filtrar");
-		btnFiltrar.setBounds(12, 244, 431, 25);
-		
-		btnFiltrar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-		});
-		
-		panel_1.add(btnFiltrar);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Etiquetas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -349,9 +333,31 @@ public class Monitor extends JFrame {
 //			}
 //		});
 		//table.setModel(new TableHelper(null));
-		
+
 		scrollPane.setViewportView(table);
 		getContentPane().setLayout(groupLayout);
+		
+		
+		JButton btnFiltrar = new JButton("Filtrar");
+		btnFiltrar.setBounds(12, 244, 431, 25);
+		
+		btnFiltrar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				String contenido = (String) comboBox.getSelectedItem();
+				String contexto = (String) comboBox_1.getSelectedItem();
+				String categoria = (String) comboBox_3.getSelectedItem();
+				String paciente = (String) comboBox_2.getSelectedItem();
+				
+				Object[][] data = controller.getTableData(headers);
+				table.setModel(new DefaultTableModel(data, headers));
+			}
+		});
+		
+		panel_1.add(btnFiltrar);
+		
 	}
 	
 	

@@ -31,7 +31,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (preparedStatement.executeUpdate() >= 1) {
 	    		result = true;
 	    		
-	    		query = "select last_insert_rowid()";
+	    		query = "SELECT MAX(id) FROM contexto";
 		    	Statement statement = connection.createStatement();
 		    	ResultSet resultSet = statement.executeQuery(query);
 		    	contexto.setId(resultSet.getInt(1));
@@ -99,9 +99,9 @@ public class ContextoDAO implements Storable<Contexto> {
 			
 			Connection connection = SqliteHelper.getConnection();
 	    	
-	    	String query = "SELECT nombre, descripcion FROM contexto WHERE nombre = ?";
+	    	String query = "SELECT id, nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
@@ -109,12 +109,13 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (resultSet.next()) {	    		
 	    		contexto_db.setNombre(resultSet.getString("nombre"));
 	    		contexto_db.setDescripcion(resultSet.getString("descripcion"));
+	    		contexto_db.setId(resultSet.getInt("id"));
 	    	}
 	    	
-	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-	    	if(generatedKeys.next()) {
-	    		contexto_db.setId(generatedKeys.getInt(1));
-            }
+//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+//	    	if(generatedKeys.next()) {
+//	    		contexto_db.setId(generatedKeys.getInt(1));
+//            }
 	    	
 	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
 	    	List<Categoria> categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto_db);
