@@ -167,18 +167,34 @@ public class NotificacionDAO implements Storable<Notificacion> {
 //			filters[5] fechaRecepcion
 //			filters[6] etiqueta
 			
-//			Storable pacienteDAO = DAOFactory.getPacienteDAO();
-//			Paciente pacienteTemp = new Paciente();
-//			pacienteTemp.setNombre((String) filters[3]);
-//			Paciente paciente = (Paciente) pacienteDAO.retrieve(pacienteTemp); // me llega un nombre y se filtra por dni
-			
-	    	String query = "SELECT * FROM notificacion WHERE text = ? AND fechaEnvio >= ? AND fechaRecepcion <= ?";
+	    	String query = "SELECT * "
+	    				 + "FROM notificacion INNER JOIN etiqueta_notificacion ON notificacion.id = etiqueta_notificacion.notificacionID "
+	    				 + "INNER JOIN etiqueta ON etiqueta.id = etiqueta_notificacion.etiquetaID "	    				 
+	    				 + "WHERE text = ? AND contextoID = ? AND pacienteID = ? AND fechaEnvio >= ? AND fechaRecepcion <= ? AND etiqueta.id = ?";
 	    	
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, (String) filters[0]);
-	    	preparedStatement.setLong(2, ((java.sql.Date) filters[4]).getTime());
-	    	preparedStatement.setLong(3, ((java.sql.Date) filters[5]).getTime());
 	    	
+	    	if (filters[1] != null) {
+	    		//query += " AND contextoID = ?";
+	    		preparedStatement.setInt(2, ((Contexto) filters[1]).getId());
+	    	}
+	    	if (filters[3] != null) {
+	    		//query += " AND pacienteID = ?";
+	    		preparedStatement.setInt(3, ((Paciente) filters[3]).getId());
+	    	}
+	    	if (filters[4] != null) {
+	    		//query += " AND fechaEnvio = ?";
+	    		preparedStatement.setDate(4, toSQLDate((Date) filters[4]));
+	    	}
+	    	if (filters[5] != null) {
+	    		//query += " AND fechaRecepcion = ?";
+	    		preparedStatement.setDate(5, toSQLDate((Date) filters[5]));
+	    	}
+	    	if (filters[6] != null) {
+	    		//query += " AND etiqueta.id = ?";
+	    		preparedStatement.setInt(6, ((Etiqueta) filters[6]).getId());
+	    	}
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
@@ -222,6 +238,10 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		return notificaciones;
 		
+	}
+	
+	private static java.sql.Date toSQLDate(Date date) {	    
+	    return new java.sql.Date(date.getTime());
 	}
 
 }
