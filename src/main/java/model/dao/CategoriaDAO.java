@@ -262,5 +262,12 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		return result;
 	}
+
+
+	@Override
+	public List<Categoria> retrieveFilteredBy(Object[] filters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

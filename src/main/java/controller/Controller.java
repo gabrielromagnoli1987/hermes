@@ -22,12 +22,20 @@ public class Controller {
 		
 	}
 	
-	public Object[][] getTableData(String[] headers) {
+	public Object[][] getTableData(String[] headers, Object[] filters) {
 		
 		// headers = "Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
 		
 		Storable<?> notificacionDAO = DAOFactory.getNotificacionDAO();
-		List<Notificacion> notificaciones = (List<Notificacion>) notificacionDAO.retrieveAll();
+		
+		List<Notificacion> notificaciones;
+		
+		if (filters == null) {
+			notificaciones = (List<Notificacion>) notificacionDAO.retrieveAll();
+		}
+		else {
+			notificaciones = (List<Notificacion>) notificacionDAO.retrieveFilteredBy(filters);
+		}
 		
 		Object[][] data = new Object[notificaciones.size()][headers.length];
 		

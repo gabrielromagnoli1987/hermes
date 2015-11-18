@@ -256,4 +256,10 @@ public class ContextoDAO implements Storable<Contexto> {
 		return result;
 	}
 
+	@Override
+	public List<Contexto> retrieveFilteredBy(Object[] filters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

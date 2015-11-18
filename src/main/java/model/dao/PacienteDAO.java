@@ -169,4 +169,10 @@ public class PacienteDAO implements Storable<Paciente> {
 		return false;
 	}
 
+	@Override
+	public List<Paciente> retrieveFilteredBy(Object[] filters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

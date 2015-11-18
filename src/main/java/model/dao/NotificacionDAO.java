@@ -150,5 +150,78 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		return false;
 	}
+	
+	public List<Notificacion> retrieveFilteredBy(Object[] filters) {
+		
+		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
+		
+		try {
+			
+			Connection connection = SqliteHelper.getConnection();
+	    	
+//			filters[0] contenido
+//			filters[1] contexto
+//			filters[2] categoria
+//			filters[3] paciente
+//			filters[4] fechaEnvio
+//			filters[5] fechaRecepcion
+//			filters[6] etiqueta
+			
+//			Storable pacienteDAO = DAOFactory.getPacienteDAO();
+//			Paciente pacienteTemp = new Paciente();
+//			pacienteTemp.setNombre((String) filters[3]);
+//			Paciente paciente = (Paciente) pacienteDAO.retrieve(pacienteTemp); // me llega un nombre y se filtra por dni
+			
+	    	String query = "SELECT * FROM notificacion WHERE text = ? AND fechaEnvio >= ? AND fechaRecepcion <= ?";
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement.setString(1, (String) filters[0]);
+	    	preparedStatement.setLong(2, ((java.sql.Date) filters[4]).getTime());
+	    	preparedStatement.setLong(3, ((java.sql.Date) filters[5]).getTime());
+	    	
+	    	
+	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	
+	    	while (resultSet.next()) {
+	    		Notificacion notificacion = new Notificacion();
+	    		notificacion.setId(resultSet.getInt("id"));
+	    		notificacion.setText(resultSet.getString("text"));
+	    		
+	    		Long integerFechaEnvio = resultSet.getLong("fechaEnvio");
+	    		Date fechaEnvio = new Date(integerFechaEnvio);
+	    		notificacion.setFechaEnvio(fechaEnvio);
+	    		
+	    		Long integerFechaRecepcion = resultSet.getLong("fechaRecepcion");
+	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
+	    		notificacion.setFechaEnvio(fechaRecepcion);
+	    		
+	    		Integer contextoID = resultSet.getInt("contextoID");
+	    		Contexto contextoTemp = new Contexto();
+	    		contextoTemp.setId(contextoID);
+	    		Storable contextoDAO = DAOFactory.getContextoDAO();
+	    		Contexto contexto_db = (Contexto)contextoDAO.retrieveById(contextoTemp);
+	    		notificacion.setContexto(contexto_db);
+	    		
+	    		Integer pacienteID = resultSet.getInt("pacienteID");
+	    		Paciente pacienteTemp = new Paciente();
+	    		pacienteTemp.setId(pacienteID);
+	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
+	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieveById(pacienteTemp);
+	    		notificacion.setPaciente(paciente_db);
+	    			    		
+	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
+	    		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
+	    		notificacion.setEtiquetas(etiquetas);
+	    		
+	    		notificaciones.add(notificacion);
+	    	}
+	    		    
+	    } catch (SQLException e) {
+	    	System.err.println(e.getMessage());
+	    }
+		
+		return notificaciones;
+		
+	}
 
 }

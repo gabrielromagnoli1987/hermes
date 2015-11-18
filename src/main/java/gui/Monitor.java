@@ -319,7 +319,7 @@ public class Monitor extends JFrame {
 				"Fecha/Hora envío", "Contenido", "Contexto", "Categoría", "Paciente", "Etiquetas"
 		};
 		
-		Object[][] data = controller.getTableData(headers);
+		Object[][] data = controller.getTableData(headers, null);
 		
 		table.setModel(new DefaultTableModel(data, headers));
 
@@ -346,12 +346,16 @@ public class Monitor extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				String contenido = (String) comboBox.getSelectedItem();
-				String contexto = (String) comboBox_1.getSelectedItem();
-				String categoria = (String) comboBox_3.getSelectedItem();
-				String paciente = (String) comboBox_2.getSelectedItem();
+				Object[] filters = new Object[7];
+				filters[0] = comboBox.getSelectedItem(); // contenido
+				filters[1] = comboBox_1.getSelectedItem(); // contexto
+				filters[2] = comboBox_3.getSelectedItem(); // categoria
+				filters[3] = comboBox_2.getSelectedItem(); // paciente
+				filters[4] = model.getValue(); // fechaEnvio
+				filters[5] = model_2.getValue(); // fechaRecepcion
+				filters[6] = comboBox_4.getSelectedItem(); // etiqueta
 				
-				Object[][] data = controller.getTableData(headers);
+				Object[][] data = controller.getTableData(headers, filters);
 				table.setModel(new DefaultTableModel(data, headers));
 			}
 		});

@@ -189,4 +189,10 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 		return result;
 	}
 
+	@Override
+	public List<Etiqueta> retrieveFilteredBy(Object[] filters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
