@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import model.Categoria;
 import model.Contexto;
@@ -18,7 +19,13 @@ public class Controller {
 	 * 
 	 * */
 	
-	public void asignarEtiqueta(String nombreEtiqueta, Notificacion notificacion) {
+	public void asignarEtiqueta(Etiqueta etiqueta, Notificacion notificacion) {
+		Storable etiquetaNotificacionDAO = DAOFactory.getEtiquetaNotificacionDAO();
+		
+		Object[] object = new Object[2];
+		object[0] = etiqueta;
+		object[1] = notificacion;
+		etiquetaNotificacionDAO.update(object);
 		
 	}
 	
@@ -68,14 +75,17 @@ public class Controller {
 	public Object[] getContenidosDeNotificaciones() {
 		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
 		List<Notificacion> notificaciones = notificacionDAO.retrieveAll();
-		int size = notificaciones.size();
-		Object[] contenidos = new Object[size];
 		
-		for (int i = 0; i < size; i++) {
-			contenidos[i] = notificaciones.get(i).getText();
-		}
+//		int size = notificaciones.size();
+//		Object[] contenidos = new Object[size];
+//		
+//		for (int i = 0; i < size; i++) {
+//			contenidos[i] = notificaciones.get(i).getText();
+//		}
 		
-		return contenidos;
+//		return contenidos;
+		
+		return notificaciones.toArray();
 		
 	}
 

@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 import model.Categoria;
 import model.Etiqueta;
+import model.Notificacion;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -207,7 +208,7 @@ public class Monitor extends JFrame {
 		
 		JButton btnAsignar = new JButton("Asignar");
 		btnAsignar.setBounds(355, 144, 117, 25);
-		panel_2.add(btnAsignar);
+		
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setForeground(Color.BLACK);
@@ -323,20 +324,26 @@ public class Monitor extends JFrame {
 		
 		table.setModel(new DefaultTableModel(data, headers));
 
-//		table.getModel().addTableModelListener(new TableModelListener() {
-//			
-//			@Override
-//			public void tableChanged(TableModelEvent e) {
-//				// TODO Auto-generated method stub
-//				//e.
-//				
-//			}
-//		});
-		//table.setModel(new TableHelper(null));
-
 		scrollPane.setViewportView(table);
 		getContentPane().setLayout(groupLayout);
 		
+		
+		// ASIGNAR ETIQUETA
+		
+		btnAsignar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String notificacionContenido = (String) table.getModel().getValueAt(table.getSelectedRow(), 2);
+				Notificacion notificacionTemp = new Notificacion();
+				notificacionTemp.setText(notificacionContenido);
+				Etiqueta etiqueta = (Etiqueta) comboBox_6.getSelectedItem();
+				controller.asignarEtiqueta(etiqueta, notificacionTemp);
+			}
+			
+		});
+		
+		panel_2.add(btnAsignar);
 		
 		JButton btnFiltrar = new JButton("Filtrar");
 		btnFiltrar.setBounds(12, 244, 431, 25);

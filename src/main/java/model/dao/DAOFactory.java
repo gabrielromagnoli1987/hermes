@@ -35,4 +35,9 @@ public class DAOFactory {
 		
 	}
 
+	public static Storable<?> getEtiquetaNotificacionDAO() {
+		
+		return new EtiquetaNotificacionDAO();
+	}
+
 }
