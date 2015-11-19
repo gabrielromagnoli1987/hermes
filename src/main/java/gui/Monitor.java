@@ -334,7 +334,7 @@ public class Monitor extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String notificacionContenido = (String) table.getModel().getValueAt(table.getSelectedRow(), 2);
+				String notificacionContenido = (String) table.getModel().getValueAt(table.getSelectedRow(), 1);
 				Notificacion notificacionTemp = new Notificacion();
 				notificacionTemp.setText(notificacionContenido);
 				Etiqueta etiqueta = (Etiqueta) comboBox_6.getSelectedItem();
