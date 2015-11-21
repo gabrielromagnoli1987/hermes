@@ -8,7 +8,7 @@ import java.util.List;
 import model.Etiqueta;
 import model.Notificacion;
 
-public class EtiquetaNotificacionDAO implements Storable {
+public class EtiquetaNotificacionDAO implements Storable<Object> {
 	
 	@Override
 	public boolean create(Object object) {
@@ -29,7 +29,7 @@ public class EtiquetaNotificacionDAO implements Storable {
 	}
 
 	@Override
-	public List retrieveAll() {
+	public List<Object> retrieveAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -75,7 +75,7 @@ public class EtiquetaNotificacionDAO implements Storable {
 	}
 
 	@Override
-	public List retrieveFilteredBy(Object[] filters) {
+	public List<Object> retrieveFilteredBy(Object[] filters) {
 		// TODO Auto-generated method stub
 		return null;
 	}

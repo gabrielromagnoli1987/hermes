@@ -133,7 +133,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		
 	    		Long integerFechaRecepcion = resultSet.getLong("fechaRecepcion");
 	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
-	    		notificacion.setFechaEnvio(fechaRecepcion);
+	    		notificacion.setFechaRecepcion(fechaRecepcion);
 	    		
 	    		Integer contextoID = resultSet.getInt("contextoID");
 	    		Contexto contextoTemp = new Contexto();
@@ -148,7 +148,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
 	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieveById(pacienteTemp);
 	    		notificacion.setPaciente(paciente_db);
-	    			    		
+	    		
+	    		// CAMBIAR: ACTUALMENTE ESTA TRAYENDO TODAS LAS ETIQUETAS, TIENE QUE TRAER LAS ASOCIADAS
+	    		
 	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
 	    		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
 	    		notificacion.setEtiquetas(etiquetas);
@@ -212,63 +214,83 @@ public class NotificacionDAO implements Storable<Notificacion> {
 //			filters[1] contexto
 //			filters[2] categoria
 //			filters[3] paciente
-//			filters[4] fechaEnvio
+//			filters[4] fechaEnvio++posicionParametro
 //			filters[5] fechaRecepcion
 //			filters[6] etiqueta
 			
-	    	String query = "SELECT * "
-	    				 + "FROM notificacion "
-	    				 + "INNER JOIN etiqueta_notificacion ON etiqueta_notificacion.notificacionID = notificacion.id "
-	    				 + "INNER JOIN etiqueta ON etiqueta.id = etiqueta_notificacion.etiquetaID "
-	    				 + "WHERE text = ?";// AND contextoID = ? AND pacienteID = ? AND fechaEnvio >= ? AND fechaRecepcion <= ? AND etiqueta.id = ?";
-	    	
 //	    	String query = "SELECT * "
-//   				 + "FROM notificacion "
-//   				 + "WHERE text = ?";
+//	    				 + "FROM notificacion "
+//	    				 + "INNER JOIN etiqueta_notificacion ON etiqueta_notificacion.notificacionID = notificacion.id "
+//	    				 + "INNER JOIN etiqueta ON etiqueta.id = etiqueta_notificacion.etiquetaID "
+//	    				 + "WHERE text = ?";// AND contextoID = ? AND pacienteID = ? AND fechaEnvio >= ? AND fechaRecepcion <= ? AND etiqueta.id = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
-	    	preparedStatement.setString(1, ((Notificacion) filters[0]).getText());
+	    	String query = "SELECT * "
+   				 + "FROM notificacion, etiqueta_notificacion, etiqueta "
+   				 + "WHERE etiqueta_notificacion.notificacionID = notificacion.id "
+   				 + "AND etiqueta_notificacion.etiquetaID = etiqueta.id "
+   				 + "AND text = ?";
 	    	
+
 	    	if (filters[1] != null) {
-	    		query += " AND contextoID = ?";// + ((Contexto) filters[1]).getId();
-	    		preparedStatement = connection.prepareStatement(query);
-	    		preparedStatement.setInt(2, ((Contexto) filters[1]).getId());
+	    		query += " AND contextoID = ?";	    		
 	    	}
+	    	
 	    	if (filters[3] != null) {
 	    		query += " AND pacienteID = ?";
-	    		preparedStatement = connection.prepareStatement(query);
-	    		preparedStatement.setInt(3, ((Paciente) filters[3]).getId());
 	    	}
+	    	
 	    	if (filters[4] != null) {
-	    		query += " AND fechaEnvio = ?";
-	    		preparedStatement = connection.prepareStatement(query);
-	    		preparedStatement.setDate(4, toSQLDate((Date) filters[4]));
+	    		query += " AND fechaEnvio >= ?";
 	    	}
+	    	
 	    	if (filters[5] != null) {
-	    		query += " AND fechaRecepcion = ?";
-	    		preparedStatement = connection.prepareStatement(query);
-	    		preparedStatement.setDate(5, toSQLDate((Date) filters[5]));
+	    		query += " AND fechaRecepcion <= ?";	    		
 	    	}
+	    	
 	    	if (filters[6] != null) {
-	    		query += " AND etiqueta.id = ?";
-	    		preparedStatement = connection.prepareStatement(query);
-	    		preparedStatement.setInt(6, ((Etiqueta) filters[6]).getId());
+	    		query += " AND etiquetaID = ?";
+	    	}
+	    	
+	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	
+	    	int posicionParametro = 1;
+	    	
+	    	preparedStatement.setString(posicionParametro, ((Notificacion) filters[0]).getText());
+	    	
+	    	if (filters[1] != null) {
+	    		preparedStatement.setInt(++posicionParametro, ((Contexto) filters[1]).getId());	    		
+	    	}
+	    	
+	    	if (filters[3] != null) {
+	    		preparedStatement.setInt(++posicionParametro, ((Paciente) filters[3]).getId());
+	    	}
+	    	
+	    	if (filters[4] != null) {
+	    		preparedStatement.setDate(++posicionParametro, toSQLDate((Date) filters[4]));
+	    	}
+	    	
+	    	if (filters[5] != null) {
+	    		preparedStatement.setDate(++posicionParametro, toSQLDate((Date) filters[5]));	    		
+	    	}
+	    	
+	    	if (filters[6] != null) {
+	    		preparedStatement.setInt(++posicionParametro, ((Etiqueta) filters[6]).getId());
 	    	}
 
 	    	ResultSet resultSet = preparedStatement.executeQuery();
-	    	
+	    		    	
 	    	while (resultSet.next()) {
 	    		Notificacion notificacion = new Notificacion();
-	    		notificacion.setId(resultSet.getInt("id"));
+	    		notificacion.setId(resultSet.getInt(1));
 	    		notificacion.setText(resultSet.getString("text"));
 	    		
-	    		Long integerFechaEnvio = resultSet.getLong("fechaEnvio");
-	    		Date fechaEnvio = new Date(integerFechaEnvio);
+	    		Long longFechaEnvio = resultSet.getLong("fechaEnvio");
+	    		Date fechaEnvio = new Date(longFechaEnvio);
 	    		notificacion.setFechaEnvio(fechaEnvio);
 	    		
-	    		Long integerFechaRecepcion = resultSet.getLong("fechaRecepcion");
-	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
-	    		notificacion.setFechaEnvio(fechaRecepcion);
+	    		Long longFechaRecepcion = resultSet.getLong("fechaRecepcion");
+	    		Date fechaRecepcion = new Date(longFechaRecepcion);
+	    		notificacion.setFechaRecepcion(fechaRecepcion);
 	    		
 	    		Integer contextoID = resultSet.getInt("contextoID");
 	    		Contexto contextoTemp = new Contexto();
@@ -283,7 +305,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
 	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieveById(pacienteTemp);
 	    		notificacion.setPaciente(paciente_db);
-	    			    		
+	    		
+	    		// CAMBIAR: ACTUALMENTE ESTA TRAYENDO TODAS LAS ETIQUETAS, TIENE QUE TRAER LAS ASOCIADAS
+	    		
 	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
 	    		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
 	    		notificacion.setEtiquetas(etiquetas);
