@@ -51,12 +51,12 @@ public class jsonTest {
 			notificacion = null;
 			
 			BufferedReader br = new BufferedReader(new FileReader("DB/notificacion.json"));
-
+			
 			//convert the json string back to object
 			notificacion = gson.fromJson(br, Notificacion.class);
-
+			
 			System.out.println(notificacion);
-	
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
