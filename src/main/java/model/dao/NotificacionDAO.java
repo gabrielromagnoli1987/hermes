@@ -217,19 +217,12 @@ public class NotificacionDAO implements Storable<Notificacion> {
 //			filters[4] fechaEnvio++posicionParametro
 //			filters[5] fechaRecepcion
 //			filters[6] etiqueta
-			
-//	    	String query = "SELECT * "
-//	    				 + "FROM notificacion "
-//	    				 + "INNER JOIN etiqueta_notificacion ON etiqueta_notificacion.notificacionID = notificacion.id "
-//	    				 + "INNER JOIN etiqueta ON etiqueta.id = etiqueta_notificacion.etiquetaID "
-//	    				 + "WHERE text = ?";// AND contextoID = ? AND pacienteID = ? AND fechaEnvio >= ? AND fechaRecepcion <= ? AND etiqueta.id = ?";
-	    	
+				    	
 	    	String query = "SELECT * "
    				 + "FROM notificacion, etiqueta_notificacion, etiqueta "
    				 + "WHERE etiqueta_notificacion.notificacionID = notificacion.id "
    				 + "AND etiqueta_notificacion.etiquetaID = etiqueta.id "
-   				 + "AND text = ?";
-	    	
+   				 + "AND text = ?";	    	
 
 	    	if (filters[1] != null) {
 	    		query += " AND contextoID = ?";	    		

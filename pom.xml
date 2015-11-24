@@ -13,20 +13,54 @@
   
   <build>
     <plugins>
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>        
         <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>app.TestHermes</mainClass>
+              <mainClass>app.Hermes</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin> -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <source>1.8</source>
+          <target>1.8</target>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>app.Hermes</mainClass>
             </manifest>
           </archive>
         </configuration>
       </plugin>
     </plugins>
   </build>
+  
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+    <maven.compiler.testSource>1.8</maven.compiler.testSource>
+    <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
+  </properties>
   
   <dependencies>
     <dependency>
