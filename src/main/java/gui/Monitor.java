@@ -346,7 +346,7 @@ public class Monitor extends JFrame {
 		panel_2.add(btnAsignar);
 		
 		JButton btnFiltrar = new JButton("Filtrar");
-		btnFiltrar.setBounds(12, 244, 431, 25);
+		btnFiltrar.setBounds(12, 244, 215, 25);
 		
 		btnFiltrar.addActionListener(new ActionListener() {
 
@@ -368,6 +368,23 @@ public class Monitor extends JFrame {
 		});
 		
 		panel_1.add(btnFiltrar);
+		
+		JButton btnMostrarTodo = new JButton("Mostrar todo");
+		btnMostrarTodo.setBounds(239, 244, 204, 25);
+		
+		btnMostrarTodo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+								
+				Object[][] data = controller.getTableData(headers, null);
+				
+				table.setModel(new DefaultTableModel(data, headers));
+
+			}
+		});
+		
+		panel_1.add(btnMostrarTodo);
 		
 	}
 	
@@ -398,5 +415,4 @@ public class Monitor extends JFrame {
         }
 
     }
-	
 }
