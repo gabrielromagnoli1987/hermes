@@ -19,6 +19,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	public boolean create(Notificacion notificacion) {
 		
 		boolean result = false;
+		
 		SqliteHelper sqliteHelper = new SqliteHelper();
 		
 		try {
@@ -56,9 +57,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		Notificacion notificacion_db = new Notificacion("", null, null, null, null);
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = new SqliteHelper().getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM notificacion WHERE text = ?";
 	    	
@@ -104,6 +107,8 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return notificacion_db;

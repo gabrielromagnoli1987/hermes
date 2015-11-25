@@ -33,7 +33,9 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
-	    		    	
+	    	
+	    	preparedStatement.close();
+	    	
 	    	return result;
 	    		    
 	    } catch(SQLException e) {

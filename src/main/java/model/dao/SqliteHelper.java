@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class SqliteHelper {
 	
-	private Connection connection;// = null;
+	private Connection connection;
 	
 	public SqliteHelper() {
 		try {
@@ -20,22 +20,6 @@ public class SqliteHelper {
 			e.printStackTrace();
 		}
 	}
-	
-//	public static Connection getConnection() throws SQLException {
-//		
-//		if (connection.isClosed()) {
-//			try {
-//				Class.forName("org.sqlite.JDBC");
-//				connection = DriverManager.getConnection("jdbc:sqlite:DB/database.db");
-//			}
-//			catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		return connection;
-//		
-//	}
 	
 	public Connection getConnection() throws SQLException {
 		return connection;
