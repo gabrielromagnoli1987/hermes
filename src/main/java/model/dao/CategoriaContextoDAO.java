@@ -18,9 +18,11 @@ public class CategoriaContextoDAO {
 		
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM categoria_contexto WHERE contextoID = ?";
 	    	
@@ -37,8 +39,13 @@ public class CategoriaContextoDAO {
 	    		categorias.add(categoriaTemp);
 	    	}
 	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return categorias;
@@ -48,9 +55,11 @@ public class CategoriaContextoDAO {
 		
 		List<Contexto> contextos = new ArrayList<Contexto>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM categoria_contexto WHERE categoriaID = ?";
 	    	
@@ -67,8 +76,13 @@ public class CategoriaContextoDAO {
 	    		contextos.add(contextoTemp);
 	    	}
 	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return contextos;

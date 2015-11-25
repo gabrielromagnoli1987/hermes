@@ -17,9 +17,11 @@ public class PacienteDAO implements Storable<Paciente> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO paciente (nombre, apellido, dni) VALUES (?, ?, ?)";
 	    	
@@ -36,6 +38,8 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		    
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 	    
 	    return result;
@@ -44,9 +48,11 @@ public class PacienteDAO implements Storable<Paciente> {
 	@Override
 	public Paciente retrieve(Paciente paciente) {
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT id, nombre, apellido, dni FROM paciente WHERE dni = ?";
 	    	
@@ -67,8 +73,13 @@ public class PacienteDAO implements Storable<Paciente> {
 //	    		paciente.setId(generatedKeys.getInt(1));
 //            }
 	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return paciente;
@@ -77,9 +88,11 @@ public class PacienteDAO implements Storable<Paciente> {
 	@Override
 	public Paciente retrieveById(Paciente paciente) {
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, apellido, dni FROM paciente WHERE id = ?";
 	    	
@@ -95,8 +108,13 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(paciente.getId());
 	    	}
 	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return paciente;
@@ -108,9 +126,11 @@ public class PacienteDAO implements Storable<Paciente> {
 		
 		List<Paciente> pacientes = new ArrayList<Paciente>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM paciente";
 	    	
@@ -126,9 +146,14 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setDni(resultSet.getInt("dni"));
 	    		pacientes.add(paciente);
 	    	}
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return pacientes;
@@ -139,9 +164,11 @@ public class PacienteDAO implements Storable<Paciente> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE paciente SET nombre = ? , apellido = ? , dni = ? WHERE id = ?";
 	    	
@@ -154,9 +181,13 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;

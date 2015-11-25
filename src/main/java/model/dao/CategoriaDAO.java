@@ -19,9 +19,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
 	    	
@@ -56,12 +58,16 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    			
 		    	}
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    	return result;
 	    	
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
-		}
+	    } finally {
+	    	sqliteHelper.closeConnection();
+	    }
 	    
 	    return result;
 	    
@@ -72,9 +78,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria_contexto (categoriaID, contextoID) VALUES (?, ?)";
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -84,9 +92,13 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;
@@ -99,9 +111,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		Categoria categoria_db = new Categoria("", "", new ArrayList<Contexto>());
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
@@ -124,9 +138,14 @@ public class CategoriaDAO implements Storable<Categoria> {
 //	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
 //	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
 //	    	categoria_db.setContextos(contextos);
+	    		    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return categoria_db;
@@ -138,9 +157,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		Categoria categoria_db = new Categoria("", "", new ArrayList<Contexto>());
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE id = ?";
 	    	
@@ -159,9 +180,13 @@ public class CategoriaDAO implements Storable<Categoria> {
 //	    	List<Contexto> contextos = categoriaContextoDAO.retrieveAllContextsOfCategory(categoria_db);
 //	    	categoria_db.setContextos(contextos);
 	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return categoria_db;
@@ -173,9 +198,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM categoria";
 	    	
@@ -196,9 +223,14 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		
 	    		categorias.add(categoria);
 	    	}
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return categorias;
@@ -210,9 +242,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE categoria SET nombre = ? , descripcion = ? WHERE id = ?";
 	    	
@@ -225,10 +259,14 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    		result = true;
 	    	}
 	    	
+	    	preparedStatement.close();
+	    	
 	    	// falta el manejo de update sobre los contextos asociados a la categoria actual
 	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;
@@ -239,9 +277,11 @@ public class CategoriaDAO implements Storable<Categoria> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	// necesario para realizar el delete en cascada
 	    	String enableForeingKeys = "PRAGMA foreign_keys = ON";
@@ -255,9 +295,13 @@ public class CategoriaDAO implements Storable<Categoria> {
 	    	if (preparedStatement.executeUpdate() != 0) {	    		
 	    		result = true;
 	    	}
+	    	
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;

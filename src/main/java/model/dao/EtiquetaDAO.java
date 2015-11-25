@@ -18,9 +18,11 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO etiqueta (nombre, descripcion) VALUES (?, ?)";
 	    	
@@ -31,12 +33,16 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    	return result;
 	    	
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
-		}
+	    } finally {
+	    	sqliteHelper.closeConnection();
+	    }
 	    
 	    return result;
 	}
@@ -44,11 +50,13 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	@Override
 	public Etiqueta retrieve(Etiqueta etiqueta) {
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		Etiqueta etiqueta_db = new Etiqueta("", "");
 		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT id, nombre, descripcion FROM categoria WHERE nombre = ?";
 	    	
@@ -67,9 +75,14 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 //	    	if(generatedKeys.next()) {
 //	    		etiqueta_db.setId(generatedKeys.getInt(1));
 //            }
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return etiqueta_db;
@@ -78,11 +91,13 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	@Override
 	public Etiqueta retrieveById(Etiqueta etiqueta) {
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		Etiqueta etiqueta_db = new Etiqueta("", "");
 		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT nombre, descripcion FROM categoria WHERE id = ?";
 	    	
@@ -96,9 +111,14 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    		etiqueta_db.setDescripcion(resultSet.getString("descripcion"));
 	    		etiqueta_db.setId(etiqueta.getId());
 	    	}
-	    		    
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return etiqueta_db;
@@ -107,11 +127,13 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	@Override
 	public List<Etiqueta> retrieveAll() {
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		List<Etiqueta> etiquetas = new ArrayList<Etiqueta>();
 		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM etiqueta";
 	    	
@@ -129,9 +151,14 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    		
 	    		etiquetas.add(etiqueta);
 	    	}
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return etiquetas;
@@ -142,9 +169,11 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE etiqueta SET nombre = ? , descripcion = ? WHERE id = ?";
 	    	
@@ -157,8 +186,12 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    		result = true;
 	    	}
 	    	
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;
@@ -169,9 +202,11 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "DELETE FROM etiqueta WHERE nombre = ?";
 	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -181,9 +216,12 @@ public class EtiquetaDAO implements Storable<Etiqueta> {
 	    		result = true;
 	    	}
 	    	
+	    	preparedStatement.close();
 	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return result;

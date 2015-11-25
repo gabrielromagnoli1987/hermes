@@ -58,7 +58,7 @@ public class CreateNotificacionTest {
 		Storable notificacionDAO = DAOFactory.getNotificacionDAO();
 		notificacionDAO.create(notificacion);
 
-		SqliteHelper.closeConnection();
+		//SqliteHelper.closeConnection();
 
 	}
 

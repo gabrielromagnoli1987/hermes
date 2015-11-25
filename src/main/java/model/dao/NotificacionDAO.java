@@ -19,10 +19,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	public boolean create(Notificacion notificacion) {
 		
 		boolean result = false;
+		SqliteHelper sqliteHelper = new SqliteHelper();
 		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO notificacion (text, fechaEnvio, fechaRecepcion, pacienteID, contextoID) VALUES (?, ?, ?, ?, ?)";
 	    	
@@ -36,11 +37,15 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    	return result;
 	    	
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 	    
 	    return result;
@@ -53,7 +58,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = new SqliteHelper().getConnection();
 	    	
 	    	String query = "SELECT * FROM notificacion WHERE text = ?";
 	    	
@@ -93,6 +98,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		notificacion.setEtiquetas(etiquetas);
 	    		
 	    	}
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
@@ -112,9 +120,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "SELECT * FROM notificacion";
 	    	
@@ -157,9 +167,14 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		
 	    		notificaciones.add(notificacion);
 	    	}
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return notificaciones;
@@ -170,9 +185,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "UPDATE notificacion SET text = ? , fechaEnvio = ? , fechaRecepcion = ? , pacienteID = ? , contextoID = ?";
 	    	
@@ -186,11 +203,15 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    	return result;
 	    		    
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 	    
 	    return result;
@@ -206,9 +227,11 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 	    	
 //			filters[0] contenido
 //			filters[1] contexto
@@ -307,9 +330,14 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		
 	    		notificaciones.add(notificacion);
 	    	}
-	    		    
+	    	
+	    	resultSet.close();
+	    	preparedStatement.close();
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
+	    } finally {
+	    	sqliteHelper.closeConnection();
 	    }
 		
 		return notificaciones;

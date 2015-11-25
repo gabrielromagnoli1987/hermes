@@ -48,7 +48,7 @@ public class CreateNotificaciones {
 			
 		}
 		
-		SqliteHelper.closeConnection();
+		//SqliteHelper.closeConnection();
 
 	}
 

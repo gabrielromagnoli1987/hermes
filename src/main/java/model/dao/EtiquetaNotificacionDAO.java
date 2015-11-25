@@ -39,9 +39,11 @@ public class EtiquetaNotificacionDAO implements Storable<Object> {
 		
 		boolean result = false;
 		
+		SqliteHelper sqliteHelper = new SqliteHelper();
+		
 		try {
 			
-			Connection connection = SqliteHelper.getConnection();
+			Connection connection = sqliteHelper.getConnection();
 			
 			Etiqueta etiqueta = (Etiqueta)((Object[])object)[0];
 			Notificacion notificacion = (Notificacion)((Object[])object)[1];
@@ -58,12 +60,16 @@ public class EtiquetaNotificacionDAO implements Storable<Object> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
+	    		    	
+	    	preparedStatement.close();
 	    	
 	    	return result;
 	    	
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
-		}
+	    } finally {
+	    	sqliteHelper.closeConnection();
+	    }
 	    
 	    return result;
 	}

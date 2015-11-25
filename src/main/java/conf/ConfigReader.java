@@ -1,6 +1,5 @@
 package conf;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,17 +8,19 @@ public class ConfigReader {
 	
 	public String getPort() {
 		
-		Properties prop = new Properties();
+		// puerto por default en el caso de que no se pueda leer el archivo de properties
+		String port = "8888";
 		InputStream input = null;
-
+		
 		try {
-
-			input = new FileInputStream("src/main/java/conf/config.properties");
-
-			prop.load(input);
-			prop.getProperty("port");
 			
-			return prop.getProperty("port");
+			Properties prop = new Properties();
+			
+			input = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
+			prop.load(input);
+			port = prop.getProperty("port");
+			
+			return port;
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -33,7 +34,7 @@ public class ConfigReader {
 			}
 		}
 		
-		return prop.getProperty("port");
+		return port;
 	}
 
 }
