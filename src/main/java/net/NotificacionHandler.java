@@ -39,6 +39,7 @@ public class NotificacionHandler implements HttpHandler {
 		arg0.sendResponseHeaders(200, response.length());
 		OutputStream os = arg0.getResponseBody();
 		os.write(response.getBytes());
+		os.close();
 
 	}
 

@@ -21,6 +21,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -28,7 +29,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	
 	    	String query = "INSERT INTO notificacion (text, fechaEnvio, fechaRecepcion, pacienteID, contextoID) VALUES (?, ?, ?, ?, ?)";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, notificacion.getText());
 	    	preparedStatement.setLong(2, notificacion.getFechaEnvio().getTime());
 	    	preparedStatement.setLong(3, notificacion.getFechaRecepcion().getTime());
@@ -38,14 +39,21 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
-	    		    	
-	    	preparedStatement.close();
-	    	
+
 	    	return result;
+	    
+		// TODO 
+		// ESTA ES LA FORMA CORRECTA DE CERRAR LOS RECURSOS, 
+	    // HAY QUE REPETIR ESTE COMPORTAMIENTO POR TODOS LOS DEMAS DAOS	
 	    	
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
+	    	try {
+				preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 	    	sqliteHelper.closeConnection();
 	    }
 	    

@@ -16,7 +16,7 @@ public class ConfigReader {
 			
 			Properties prop = new Properties();
 			
-			input = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
+			input = getClass().getResourceAsStream("/config.properties");
 			prop.load(input);
 			port = prop.getProperty("port");
 			

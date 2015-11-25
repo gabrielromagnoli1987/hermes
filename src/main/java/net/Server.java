@@ -16,7 +16,8 @@ public class Server {
 		Integer port = Integer.parseInt(configReader.getPort());
 		
 		try {
-			HttpServer server = HttpServer.create(new InetSocketAddress(port), 100);
+			HttpServer server = HttpServer.create();
+					server.bind(new InetSocketAddress(port),0);
 			server.createContext("/hermes/", new NotificacionHandler());
 			
 			ExecutorService executorService = Executors.newCachedThreadPool();
@@ -25,7 +26,6 @@ public class Server {
 			server.start();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
