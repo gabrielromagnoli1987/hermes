@@ -65,7 +65,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		Notificacion notificacion_db = new Notificacion("", null, null, null, null);
 		
-		SqliteHelper sqliteHelper = new SqliteHelper();
+		SqliteHelper sqliteHelper = new SqliteHelper();		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -73,12 +75,12 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	
 	    	String query = "SELECT * FROM notificacion WHERE text = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, notificacion.getText());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();	    	
+	    	resultSet = preparedStatement.executeQuery();
 	    	
-	    	if (resultSet.next()) {	  
+	    	if (resultSet.next()) {
 	    		notificacion_db.setId(resultSet.getInt("id"));
 	    		notificacion_db.setText(resultSet.getString("text"));
 	    		
@@ -88,7 +90,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		
 	    		Long integerFechaRecepcion = resultSet.getLong("fechaRecepcion");
 	    		Date fechaRecepcion = new Date(integerFechaRecepcion);
-	    		notificacion_db.setFechaEnvio(fechaRecepcion);		 
+	    		notificacion_db.setFechaEnvio(fechaRecepcion);
 	    		
 	    		Integer contextoID = resultSet.getInt("contextoID");
 	    		Contexto contextoTemp = new Contexto();
@@ -103,20 +105,17 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		Storable pacienteDAO = DAOFactory.getPacienteDAO();
 	    		Paciente paciente_db = (Paciente)pacienteDAO.retrieveById(pacienteTemp);
 	    		notificacion.setPaciente(paciente_db);
-	    			    		
+	    		
 	    		Storable etiquetaDAO = DAOFactory.getEtiquetaDAO();
 	    		List<Etiqueta> etiquetas = etiquetaDAO.retrieveAll();
 	    		notificacion.setEtiquetas(etiquetas);
 	    		
-	    	}
+	    	}	
 	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    		    
-	    } catch (SQLException e) {
+		} catch(SQLException e) {
 	    	System.err.println(e.getMessage());
-	    } finally {
-	    	sqliteHelper.closeConnection();
+	    } finally {	    	
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return notificacion_db;
@@ -133,7 +132,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		
 		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
 		
-		SqliteHelper sqliteHelper = new SqliteHelper();
+		SqliteHelper sqliteHelper = new SqliteHelper();		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -141,9 +142,9 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	
 	    	String query = "SELECT * FROM notificacion";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	while (resultSet.next()) {
 	    		Notificacion notificacion = new Notificacion();
@@ -181,13 +182,10 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		notificaciones.add(notificacion);
 	    	}
 	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    		    
-	    } catch (SQLException e) {
+		} catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return notificaciones;
@@ -199,6 +197,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -206,7 +205,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    	
 	    	String query = "UPDATE notificacion SET text = ? , fechaEnvio = ? , fechaRecepcion = ? , pacienteID = ? , contextoID = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, notificacion.getText());
 	    	preparedStatement.setLong(2, notificacion.getFechaEnvio().getTime());
 	    	preparedStatement.setLong(3, notificacion.getFechaRecepcion().getTime());
@@ -224,7 +223,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 	    
 	    return result;
@@ -241,6 +240,8 @@ public class NotificacionDAO implements Storable<Notificacion> {
 		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -280,7 +281,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		query += " AND etiquetaID = ?";
 	    	}
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	
 	    	int posicionParametro = 1;
 	    	
@@ -306,7 +307,7 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		preparedStatement.setInt(++posicionParametro, ((Etiqueta) filters[6]).getId());
 	    	}
 
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    		    	
 	    	while (resultSet.next()) {
 	    		Notificacion notificacion = new Notificacion();
@@ -344,13 +345,10 @@ public class NotificacionDAO implements Storable<Notificacion> {
 	    		notificaciones.add(notificacion);
 	    	}
 	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return notificaciones;

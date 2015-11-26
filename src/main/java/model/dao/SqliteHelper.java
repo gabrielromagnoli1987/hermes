@@ -2,7 +2,10 @@ package model.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SqliteHelper {
 	
@@ -31,6 +34,51 @@ public class SqliteHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void closeAll(ResultSet resultSet, PreparedStatement preparedStatement) {
+		
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+    	} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	try {
+    		if (preparedStatement != null) {
+    			preparedStatement.close();
+    		}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	this.closeConnection();
+	}
+	
+	public void closeAll(ResultSet resultSet, PreparedStatement preparedStatement, Statement statement) {
+		
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+    	} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	try {
+    		if (preparedStatement != null) {
+    			preparedStatement.close();
+    		}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	try {
+    		if (statement != null) {
+    			statement.close();
+    		}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	this.closeConnection();
 	}
 
 }

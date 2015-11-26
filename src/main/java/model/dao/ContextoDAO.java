@@ -19,6 +19,9 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Statement statement = null;
 		
 		try {
 			
@@ -26,7 +29,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "INSERT INTO contexto (nombre, descripcion) VALUES (?, ?)";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	preparedStatement.setString(2, contexto.getDescripcion());
 	    	
@@ -34,10 +37,16 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		result = true;
 	    		
 	    		query = "SELECT MAX(id) FROM contexto";
-		    	Statement statement = connection.createStatement();
-		    	ResultSet resultSet = statement.executeQuery(query);
+		    	statement = connection.createStatement();
+		    	resultSet = statement.executeQuery(query);
 		    	contexto.setId(resultSet.getInt(1));
-		    	resultSet.close();
+		    	
+		    	// si no cierro la conexion en este punto me queda lockeada la base
+		    	try {
+		    		resultSet.close();
+		    	} catch(SQLException e) {
+		    		System.err.println(e.getMessage());
+		    	}
 		    	
 	    		List<Categoria> categorias = contexto.getCategorias();
 	    		
@@ -55,18 +64,15 @@ public class ContextoDAO implements Storable<Contexto> {
 	    				// Se guardan los IDs en la tabla intermediaria
 						result = result && saveOnMapTable(categoria.getId(), contexto.getId());
 					}
-	    			
 		    	}
 	    	}
-	    	
-	    	preparedStatement.close();
 	    	
 	    	return result;
 	    		    
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement, statement);
 	    }
 	    
 	    return result;
@@ -77,13 +83,14 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
 			Connection connection = sqliteHelper.getConnection();
 	    	
 	    	String query = "INSERT INTO categoria_contexto (categoriaID, contextoID) VALUES (?, ?)";
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, categoriaID);
 	    	preparedStatement.setInt(2, contextoID);
 	    	
@@ -91,12 +98,10 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		result = true;
 	    	}
 	    	
-	    	preparedStatement.close();
-	    	
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 		
 		return result;
@@ -109,6 +114,8 @@ public class ContextoDAO implements Storable<Contexto> {
 		Contexto contexto_db = new Contexto("", "", new ArrayList<Categoria>());
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -116,10 +123,10 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "SELECT id, nombre, descripcion FROM contexto WHERE nombre = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
 	    		contexto_db.setNombre(resultSet.getString("nombre"));
@@ -127,13 +134,8 @@ public class ContextoDAO implements Storable<Contexto> {
 	    		contexto_db.setId(resultSet.getInt("id"));
 	    	}
 	    	
-//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-//	    	if(generatedKeys.next()) {
-//	    		contexto_db.setId(generatedKeys.getInt(1));
-//            }
-	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
+//	    	resultSet.close();
+//	    	preparedStatement.close();
 	    	
 	    	CategoriaContextoDAO categoriaContextoDAO = new CategoriaContextoDAO();
 	    	List<Categoria> categorias = categoriaContextoDAO.retrieveAllCategoriesOfContext(contexto_db);
@@ -142,7 +144,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return contexto_db;
@@ -154,6 +156,8 @@ public class ContextoDAO implements Storable<Contexto> {
 		Contexto contexto_db = new Contexto("", "", new ArrayList<Categoria>());
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -161,10 +165,10 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "SELECT nombre, descripcion FROM contexto WHERE id = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, contexto.getId());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
 	    		contexto_db.setNombre(resultSet.getString("nombre"));
@@ -179,7 +183,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return contexto_db;
@@ -192,6 +196,7 @@ public class ContextoDAO implements Storable<Contexto> {
 		List<Contexto> contextos = new ArrayList<Contexto>();
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -199,7 +204,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "SELECT * FROM contexto";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 	    	
@@ -221,7 +226,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 		
 		return contextos;
@@ -233,6 +238,7 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -240,7 +246,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	String query = "UPDATE contexto SET nombre = ? , descripcion = ? WHERE id = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, contexto.getNombre());
 	    	preparedStatement.setString(2, contexto.getDescripcion());	    	
 	    	preparedStatement.setInt(3, contexto.getId());
@@ -252,7 +258,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 		
 		return result;
@@ -264,6 +270,7 @@ public class ContextoDAO implements Storable<Contexto> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -271,7 +278,7 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	
 	    	// necesario para realizar el delete en cascada
 	    	String enableForeingKeys = "PRAGMA foreign_keys = ON";
-	    	PreparedStatement preparedStatement = connection.prepareStatement(enableForeingKeys);
+	    	preparedStatement = connection.prepareStatement(enableForeingKeys);
 	    	preparedStatement.executeUpdate();
 	    	
 	    	String query = "DELETE FROM contexto WHERE nombre = ?";
@@ -281,12 +288,11 @@ public class ContextoDAO implements Storable<Contexto> {
 	    	if (preparedStatement.executeUpdate() != 0) {	    		
 	    		result = true;
 	    	}
-	    		    	
 	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 		
 		return result;

@@ -19,6 +19,8 @@ public class CategoriaContextoDAO {
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -26,10 +28,10 @@ public class CategoriaContextoDAO {
 	    	
 	    	String query = "SELECT * FROM categoria_contexto WHERE contextoID = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, contexto.getId());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	Storable categoriaDAO = DAOFactory.getCategoriaDAO();	    	
 	    	
 	    	while (resultSet.next()) {
@@ -45,7 +47,7 @@ public class CategoriaContextoDAO {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return categorias;
@@ -56,6 +58,8 @@ public class CategoriaContextoDAO {
 		List<Contexto> contextos = new ArrayList<Contexto>();
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -63,10 +67,10 @@ public class CategoriaContextoDAO {
 	    	
 	    	String query = "SELECT * FROM categoria_contexto WHERE categoriaID = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, categoria.getId());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	Storable contextoDAO = DAOFactory.getContextoDAO();
 	    	
 	    	while (resultSet.next()) {
@@ -82,7 +86,7 @@ public class CategoriaContextoDAO {
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return contextos;

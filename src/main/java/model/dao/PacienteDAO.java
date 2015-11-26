@@ -18,6 +18,7 @@ public class PacienteDAO implements Storable<Paciente> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -25,7 +26,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	
 	    	String query = "INSERT INTO paciente (nombre, apellido, dni) VALUES (?, ?, ?)";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, paciente.getNombre());
 	    	preparedStatement.setString(2, paciente.getApellido());
 	    	preparedStatement.setInt(3, paciente.getDni());
@@ -34,14 +35,12 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		result = true;
 	    	}
 	    	
-	    	preparedStatement.close();
-	    	
 	    	return result;
-	    		    
+	    	
 	    } catch(SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 	    
 	    return result;
@@ -51,6 +50,8 @@ public class PacienteDAO implements Storable<Paciente> {
 	public Paciente retrieve(Paciente paciente) {
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -58,10 +59,10 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	
 	    	String query = "SELECT id, nombre, apellido, dni FROM paciente WHERE dni = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);//, Statement.RETURN_GENERATED_KEYS);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, paciente.getDni());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
 	    		paciente.setNombre(resultSet.getString("nombre"));
@@ -70,18 +71,10 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(resultSet.getInt("id"));
 	    	}
 	    	
-//	    	ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-//	    	if(generatedKeys.next()) {
-//	    		paciente.setId(generatedKeys.getInt(1));
-//            }
-	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return paciente;
@@ -91,6 +84,8 @@ public class PacienteDAO implements Storable<Paciente> {
 	public Paciente retrieveById(Paciente paciente) {
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -98,10 +93,10 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	
 	    	String query = "SELECT nombre, apellido, dni FROM paciente WHERE id = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, paciente.getId());
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	if (resultSet.next()) {	    		
 	    		paciente.setNombre(resultSet.getString("nombre"));
@@ -110,13 +105,10 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		paciente.setId(paciente.getId());
 	    	}
 	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return paciente;
@@ -129,6 +121,8 @@ public class PacienteDAO implements Storable<Paciente> {
 		List<Paciente> pacientes = new ArrayList<Paciente>();
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			
@@ -136,9 +130,9 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	
 	    	String query = "SELECT * FROM paciente";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	
-	    	ResultSet resultSet = preparedStatement.executeQuery();
+	    	resultSet = preparedStatement.executeQuery();
 	    	
 	    	while (resultSet.next()) {
 	    		Paciente paciente = new Paciente();
@@ -149,13 +143,10 @@ public class PacienteDAO implements Storable<Paciente> {
 	    		pacientes.add(paciente);
 	    	}
 	    	
-	    	resultSet.close();
-	    	preparedStatement.close();
-	    		    
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(resultSet, preparedStatement);
 	    }
 		
 		return pacientes;
@@ -167,6 +158,7 @@ public class PacienteDAO implements Storable<Paciente> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -174,7 +166,7 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	
 	    	String query = "UPDATE paciente SET nombre = ? , apellido = ? , dni = ? WHERE id = ?";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setString(1, paciente.getNombre());
 	    	preparedStatement.setString(2, paciente.getApellido());
 	    	preparedStatement.setInt(3, paciente.getDni());
@@ -183,13 +175,11 @@ public class PacienteDAO implements Storable<Paciente> {
 	    	if (preparedStatement.executeUpdate() != 0) {
 	    		result = true;
 	    	}
-	    		    	
-	    	preparedStatement.close();
-	    		    
+	    	
 	    } catch (SQLException e) {
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 		
 		return result;

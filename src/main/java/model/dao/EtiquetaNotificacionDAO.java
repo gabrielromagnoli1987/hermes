@@ -40,6 +40,7 @@ public class EtiquetaNotificacionDAO implements Storable<Object> {
 		boolean result = false;
 		
 		SqliteHelper sqliteHelper = new SqliteHelper();
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			
@@ -53,22 +54,20 @@ public class EtiquetaNotificacionDAO implements Storable<Object> {
 			
 	    	String query = "INSERT INTO etiqueta_notificacion (etiquetaID, notificacionID) VALUES (?, ?)";
 	    	
-	    	PreparedStatement preparedStatement = connection.prepareStatement(query);
+	    	preparedStatement = connection.prepareStatement(query);
 	    	preparedStatement.setInt(1, etiqueta.getId());
 	    	preparedStatement.setInt(2, notificacion_db.getId());
 	    	
 	    	if (preparedStatement.executeUpdate() == 1) {
 	    		result = true;
 	    	}
-	    		    	
-	    	preparedStatement.close();
 	    	
 	    	return result;
 	    	
 	    } catch(SQLException e) {	    	
 	    	System.err.println(e.getMessage());
 	    } finally {
-	    	sqliteHelper.closeConnection();
+	    	sqliteHelper.closeAll(null, preparedStatement);
 	    }
 	    
 	    return result;
